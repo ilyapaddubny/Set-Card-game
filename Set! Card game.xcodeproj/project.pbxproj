@@ -8,12 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		2D4F6B0B2AC4586E00A70012 /* Set__Card_gameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B0A2AC4586E00A70012 /* Set__Card_gameApp.swift */; };
-		2D4F6B0D2AC4586E00A70012 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B0C2AC4586E00A70012 /* ContentView.swift */; };
+		2D4F6B0D2AC4586E00A70012 /* GameSetView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B0C2AC4586E00A70012 /* GameSetView.swift */; };
 		2D4F6B0F2AC4587000A70012 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D4F6B0E2AC4587000A70012 /* Assets.xcassets */; };
 		2D4F6B132AC4587000A70012 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D4F6B122AC4587000A70012 /* Preview Assets.xcassets */; };
 		2D4F6B1D2AC4587100A70012 /* Set__Card_gameTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B1C2AC4587100A70012 /* Set__Card_gameTests.swift */; };
 		2D4F6B272AC4587100A70012 /* Set__Card_gameUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B262AC4587100A70012 /* Set__Card_gameUITests.swift */; };
 		2D4F6B292AC4587100A70012 /* Set__Card_gameUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B282AC4587100A70012 /* Set__Card_gameUITestsLaunchTests.swift */; };
+		2D4F6B362AC45A6200A70012 /* GameSetViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B352AC45A6100A70012 /* GameSetViewModel.swift */; };
+		2D4F6B382AC45A8200A70012 /* GameSetModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B372AC45A8200A70012 /* GameSetModel.swift */; };
+		2D4F6B3A2AC5AEDA00A70012 /* CardContent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B392AC5AEDA00A70012 /* CardContent.swift */; };
+		2D4F6B3C2AC5E20B00A70012 /* AspectVGrid.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B3B2AC5E20B00A70012 /* AspectVGrid.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +40,7 @@
 /* Begin PBXFileReference section */
 		2D4F6B072AC4586E00A70012 /* Set! Card game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Set! Card game.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D4F6B0A2AC4586E00A70012 /* Set__Card_gameApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set__Card_gameApp.swift; sourceTree = "<group>"; };
-		2D4F6B0C2AC4586E00A70012 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		2D4F6B0C2AC4586E00A70012 /* GameSetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetView.swift; sourceTree = "<group>"; };
 		2D4F6B0E2AC4587000A70012 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2D4F6B102AC4587000A70012 /* Set__Card_game.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Set__Card_game.entitlements; sourceTree = "<group>"; };
 		2D4F6B122AC4587000A70012 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -45,6 +49,10 @@
 		2D4F6B222AC4587100A70012 /* Set! Card gameUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Set! Card gameUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D4F6B262AC4587100A70012 /* Set__Card_gameUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set__Card_gameUITests.swift; sourceTree = "<group>"; };
 		2D4F6B282AC4587100A70012 /* Set__Card_gameUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Set__Card_gameUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		2D4F6B352AC45A6100A70012 /* GameSetViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetViewModel.swift; sourceTree = "<group>"; };
+		2D4F6B372AC45A8200A70012 /* GameSetModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameSetModel.swift; sourceTree = "<group>"; };
+		2D4F6B392AC5AEDA00A70012 /* CardContent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContent.swift; sourceTree = "<group>"; };
+		2D4F6B3B2AC5E20B00A70012 /* AspectVGrid.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AspectVGrid.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -96,10 +104,14 @@
 			isa = PBXGroup;
 			children = (
 				2D4F6B0A2AC4586E00A70012 /* Set__Card_gameApp.swift */,
-				2D4F6B0C2AC4586E00A70012 /* ContentView.swift */,
+				2D4F6B0C2AC4586E00A70012 /* GameSetView.swift */,
+				2D4F6B352AC45A6100A70012 /* GameSetViewModel.swift */,
+				2D4F6B392AC5AEDA00A70012 /* CardContent.swift */,
+				2D4F6B372AC45A8200A70012 /* GameSetModel.swift */,
 				2D4F6B0E2AC4587000A70012 /* Assets.xcassets */,
 				2D4F6B102AC4587000A70012 /* Set__Card_game.entitlements */,
 				2D4F6B112AC4587000A70012 /* Preview Content */,
+				2D4F6B3B2AC5E20B00A70012 /* AspectVGrid.swift */,
 			);
 			path = "Set! Card game";
 			sourceTree = "<group>";
@@ -259,7 +271,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2D4F6B0D2AC4586E00A70012 /* ContentView.swift in Sources */,
+				2D4F6B362AC45A6200A70012 /* GameSetViewModel.swift in Sources */,
+				2D4F6B3A2AC5AEDA00A70012 /* CardContent.swift in Sources */,
+				2D4F6B3C2AC5E20B00A70012 /* AspectVGrid.swift in Sources */,
+				2D4F6B0D2AC4586E00A70012 /* GameSetView.swift in Sources */,
+				2D4F6B382AC45A8200A70012 /* GameSetModel.swift in Sources */,
 				2D4F6B0B2AC4586E00A70012 /* Set__Card_gameApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -434,7 +450,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.5;
@@ -472,7 +488,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 16.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 13.5;

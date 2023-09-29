@@ -10,84 +10,50 @@ import Foundation
 
                     
 
-struct GameSetModel {
+struct GameSetModel<CardContent: Equatable> {
     private(set) var deck = [Card]()
     
-    init() {
-        createTheDeck()
-        print(deck.count)
-    }
-    
-    //iterates over all the possible cards and append them to the deck
-    mutating func createTheDeck() {
-        
-       
-        for colorCases in FillType.allCases {
-            let color = colorCases.color
-            
-            for fillTypeCases in FillType.allCases {
-                let fillType = fillTypeCases.fillType
-                
-                for shapeCases in FillType.allCases {
-                    let shape = shapeCases.shape
-                    
-                    for numberOfItemsCases in FillType.allCases {
-                        let numberOfItems = numberOfItemsCases.numberOfItems
-                        
-                        deck.append(Card(color: color, numberOfItems: numberOfItems, shape: shape, fillType: fillType))
-                    }
-                }
-            }
+    init(numberOfCards: Int, cardContentFactory: (Int) -> CardContent) {
+        for index in 0..<numberOfCards {
+            let content = cardContentFactory(index)
+            deck.append(Card(content: content))
         }
+        deck.shuffle()
+        addNumberOfCards(9)
     }
     
     mutating func shuffle() {
         deck.shuffle()
     }
 
+    mutating func addNumberOfCards(_ numberOfCards: Int) {
+        var cardsAdded = 0
+        for index in deck.indices where !deck[index].onTheTable {
+            deck[index].onTheTable = true
+            cardsAdded += 1
+            if cardsAdded >= numberOfCards {
+                break
+            }
+        }
+        
+    }
+
     
-    struct Card: Identifiable {
-        let color: String
-        let numberOfItems: Int
-        let shape: String
-        let fillType: String
+    struct Card: Identifiable, Equatable {
+        static func == (lhs: GameSetModel<CardContent>.Card, rhs: GameSetModel<CardContent>.Card) -> Bool {
+            return lhs.content == rhs.content && 
+            lhs.id == rhs.id &&
+            lhs.isMatched == rhs.isMatched &&
+            lhs.isChosen == rhs.isChosen &&
+            lhs.onTheTable == rhs.onTheTable
+        }
+        
+        let content: CardContent
         
         var id = UUID()
         
         var isMatched = false
         var isChosen = false
-    }
-    
-    enum FillType: CaseIterable {
-        case one, two, three
-        
-        var color: String {
-            switch self {
-            case .one: "Red"
-            case .two: "Green"
-            case .three: "Blue"
-            }
-        }
-        var fillType: String {
-            switch self {
-            case .one: "Empty"
-            case .two: "Striped"
-            case .three: "Solid"
-            }
-        }
-        var shape: String {
-            switch self {
-            case .one: "Squere"
-            case .two:  "Circle"
-            case .three: "Rectangle"
-            }
-        }
-        var numberOfItems: Int {
-            switch self {
-            case .one: 1
-            case .two: 2
-            case .three: 3
-            }
-        }
+        var onTheTable = false
     }
 }
