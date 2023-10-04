@@ -12,6 +12,7 @@ class GameSetViewModel: ObservableObject {
     
     private static let contentArray: [Text] = Array(repeating: Text("1"), count: 81)
     private static var contentArrayShape = [CardContent]()
+   
     
     private static func fetchContentArray() {
         
@@ -59,7 +60,7 @@ class GameSetViewModel: ObservableObject {
     // MARK: - Intents
     
     func choose(_ card: GameSetModel<CardContent>.Card) -> Void {
-        
+        gameModel.choose(card)
     }
     
     func shuffle() -> Void {
@@ -91,9 +92,9 @@ enum OneOfThree: CaseIterable {
     }
     var shape: CardContent.ShapeType {
         switch self {
-        case .one: CardContent.ShapeType.circle(radius: 4)
+        case .one: CardContent.ShapeType.circle
         case .two: CardContent.ShapeType.ellipse
-        case .three: CardContent.ShapeType.roundedRectangle(cornerRadius: 5)
+        case .three: CardContent.ShapeType.roundedRectangle(cornerRadius: 0)
         }
     }
     var numberOfItems: Int {

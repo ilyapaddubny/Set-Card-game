@@ -28,13 +28,13 @@ struct CardContent: Equatable {
     }
     
     enum ShapeType: Equatable {
-        case circle(radius: CGFloat)
+        case circle
         case roundedRectangle(cornerRadius: CGFloat)
         case ellipse
         
         var description: String {
             switch self {
-            case .circle(let radius): "Shape is a circle with radius - \(radius)"
+            case .circle: "Shape is a circle"
             case .roundedRectangle(let cornerRadius): "Shape is a roundedRectangle with corner radius - \(cornerRadius)"
             case .ellipse: "Shape is a ellipse"
             }

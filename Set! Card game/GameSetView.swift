@@ -24,19 +24,16 @@ struct GameSetView: View {
     
     
     //    set of cards
+    @ViewBuilder
     private var cards: some View {
-        AspectVGrid(viewModel.cards.filter({
-            $0.onTheTable
-        }), aspectRatio: cardAspectRatio) { card in
-            if card.onTheTable == true {
-                CardView(card)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                        viewModel.shuffle()
-                    }
-            }
+        AspectVGrid(viewModel.cards.filter({$0.onTheTable}), aspectRatio: cardAspectRatio) { card in
+            CardView(card)
+                .padding(4)
+                .onTapGesture {
+                    viewModel.choose(card)
+                }
         }
+        
     }
     
     
@@ -63,6 +60,9 @@ struct GameSetView: View {
 struct CardView: View {
     let card: GameSetModel<CardContent>.Card
     private let shapeAspectRatio: CGFloat = 2/1
+    private let cardAspectRatio: CGFloat = 2/3
+    private let contentPadding: CGFloat = 4
+
     let base = RoundedRectangle(cornerRadius: 12)
 
     init(_ card: GameSetModel<CardContent>.Card) {
@@ -71,12 +71,18 @@ struct CardView: View {
     
     var body: some View {
         ZStack(alignment: .center) {
-            base.stroke().foregroundColor(.gray)
-            base.fill(.white)
+            base
+                .stroke(lineWidth: card.isChosen ? 4 : 1)
+                .foregroundColor(card.isChosen ? .red : .gray)
+            base
+                .fill(.white)
+            base
+                .fill(.gray
+                    .opacity(card.isChosen ? 0.3 : 0))
             content
-                            .padding()
+                .padding()
                 .minimumScaleFactor(0.1)
-                .aspectRatio(2/3, contentMode: .fill)
+                .aspectRatio(cardAspectRatio, contentMode: .fill)
         }
     }
     
@@ -88,6 +94,7 @@ struct CardView: View {
                 VStack(alignment: .center, spacing: 0) {
                     ForEach(numberOfShapes) {_ in
                         shape(geometry: geometry)
+                            .padding([.top, .bottom], contentPadding/2)
                     }
                 }
                 .frame(width: geometry.size.width, height: geometry.size.height)
@@ -104,11 +111,11 @@ struct CardView: View {
                     Circle()
                         .stroke()
                         .foregroundColor(.black)
-                        .frame(height: geometry.size.height/3)
+                        .frame(height: geometry.size.height/3-contentPadding)
                     Circle()
                         .foregroundColor(card.content.color)
                         .opacity(card.content.opacity)
-                        .frame(height: geometry.size.height/3)
+                        .frame(height: geometry.size.height/3-contentPadding)
 //                        .background(.gray)
                 }
                 
@@ -117,13 +124,13 @@ struct CardView: View {
                     Ellipse()
                         .stroke()
                         .foregroundColor(.black)
-                        .frame(height: geometry.size.height/3)
+                        .frame(height: geometry.size.height/3-contentPadding)
                         .aspectRatio(shapeAspectRatio, contentMode: .fit)
                     
                     Ellipse()
                         .foregroundColor(card.content.color)
                         .opacity(card.content.opacity)
-                        .frame(height: geometry.size.height/3)
+                        .frame(height: geometry.size.height/3-contentPadding)
                         .aspectRatio(shapeAspectRatio, contentMode: .fit)
 //                        .background(.gray)
 
@@ -135,13 +142,13 @@ struct CardView: View {
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .stroke()
                         .foregroundColor(.black)
-                        .frame(height: geometry.size.height/3)
+                        .frame(height: geometry.size.height/3-contentPadding)
                         .aspectRatio(shapeAspectRatio, contentMode: .fit)
                     
                     RoundedRectangle(cornerRadius: cornerRadius)
                         .foregroundColor(card.content.color)
                         .opacity(card.content.opacity)
-                        .frame(height: geometry.size.height/3)
+                        .frame(height: geometry.size.height/3-contentPadding)
                         .aspectRatio(shapeAspectRatio, contentMode: .fit)
 //                        .background(.gray)
 

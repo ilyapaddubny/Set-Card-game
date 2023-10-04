@@ -25,6 +25,13 @@ struct GameSetModel<CardContent: Equatable> {
     mutating func shuffle() {
         deck.shuffle()
     }
+    
+    mutating func choose(_ card: GameSetModel<CardContent>.Card) -> Void {
+        if let cardIndex = deck.firstIndex(where: {$0.id == card.id}) {
+            deck[cardIndex].isChosen.toggle()
+        }
+        
+    }
 
     mutating func addNumberOfCards(_ numberOfCards: Int) {
         var cardsAdded = 0

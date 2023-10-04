@@ -11,6 +11,8 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
     let items: [Item]
     var aspectRatio: CGFloat = 1
     let content: (Item) -> ItemView
+    let minimumWidhtOfItem: CGFloat = 65 //if the item size is smaller than a minimumWidhtOfItem: we use a ScrollView
+    
     
     init(_ items: [Item], aspectRatio: CGFloat, @ViewBuilder content: @escaping (Item) -> ItemView) {
         self.items = items
@@ -25,20 +27,33 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                 size: geometry.size,
                 atAspectRatio: aspectRatio
             )
-            LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
-                ForEach(items) { item in
-                    content(item)
-                        .aspectRatio(aspectRatio, contentMode: .fit)
+            
+            
+            if (gridItemSize < minimumWidhtOfItem) {
+                ScrollView() {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 65), spacing: 0)], spacing: 0) {
+                        ForEach(items) { item in
+                            content(item)
+                                .aspectRatio(aspectRatio, contentMode: .fit)
+                        }
+                    }
+                }
+            } else {
+                LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
+                    ForEach(items) { item in
+                        content(item)
+                            .aspectRatio(aspectRatio, contentMode: .fit)
+                    }
                 }
             }
         }
     }
     
-    private func gridItemWidthThatFits(
+    func gridItemWidthThatFits(
         count: Int,
         size: CGSize,
         atAspectRatio aspectRatio: CGFloat
-    ) -> CGFloat {
+    ) -> CGFloat  {
         let count = CGFloat(count)
         var columnCount = 1.0
         repeat {
@@ -53,4 +68,5 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
         } while columnCount < count
         return min(size.width / count, size.height * aspectRatio).rounded(.down)
     }
+    
 }
