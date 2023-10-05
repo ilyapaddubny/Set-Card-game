@@ -41,10 +41,10 @@ struct GameSetView: View {
         Button {
             viewModel.addThreeMoreCards()
         } label: {
-            Text("ADD CARDS")
+            Text("Deal 3 More Cards")
                 .font(.title2)
                 .foregroundStyle(.white)
-                .padding(4)
+                .padding(8)
                 .background {
                     RoundedRectangle(cornerRadius: 8)
                         .fill(.blue)
@@ -72,13 +72,20 @@ struct CardView: View {
     var body: some View {
         ZStack(alignment: .center) {
             base
-                .stroke(lineWidth: card.isChosen ? 4 : 1)
-                .foregroundColor(card.isChosen ? .red : .gray)
+                .stroke(lineWidth: card.isChosen ? 5 : 1)
+                .foregroundColor(card.isChosen ? .blue : .gray)
             base
                 .fill(.white)
-            base
-                .fill(.gray
-                    .opacity(card.isChosen ? 0.3 : 0))
+            if(card.isMatched) {
+                base
+                    .fill(.green
+                        .opacity(card.oneOfThreeSelected ? 0.4 : 0))
+            } else {
+                base
+                    .fill(.red
+                        .opacity(card.oneOfThreeSelected ? 0.4 : 0))
+            }
+            
             content
                 .padding()
                 .minimumScaleFactor(0.1)
@@ -89,11 +96,10 @@ struct CardView: View {
     //    creates needed number of shapes
     @ViewBuilder
     var content: some View {
-        let numberOfShapes = 0..<card.content.numberOfItems
             GeometryReader {geometry in
                 VStack(alignment: .center, spacing: 0) {
-                    ForEach(numberOfShapes) {_ in
-                        shape(geometry: geometry)
+                    ForEach(0..<card.content.numberOfItems, id: \.self) {index in
+                        shape(geometry: geometry, index: index)
                             .padding([.top, .bottom], contentPadding/2)
                     }
                 }
@@ -104,7 +110,7 @@ struct CardView: View {
     
     //    shape dreation
     @ViewBuilder
-    func shape(geometry: GeometryProxy) -> some View {
+    func shape(geometry: GeometryProxy, index: Int) -> some View {
             switch card.content.shape {
             case .circle:
                 ZStack {

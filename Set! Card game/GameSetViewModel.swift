@@ -52,7 +52,6 @@ class GameSetViewModel: ObservableObject {
     
     
     
-    
     var cards: [GameSetModel<CardContent>.Card] {
         gameModel.deck
     }
@@ -60,7 +59,19 @@ class GameSetViewModel: ObservableObject {
     // MARK: - Intents
     
     func choose(_ card: GameSetModel<CardContent>.Card) -> Void {
-        gameModel.choose(card)
+        gameModel.choose(card) {cards in
+            let opacityCheck = (cards[0].content.opacity == cards[1].content.opacity && cards[1].content.opacity == cards[2].content.opacity) ||
+            (cards[0].content.opacity != cards[1].content.opacity && cards[1].content.opacity != cards[2].content.opacity  && cards[0].content.opacity != cards[2].content.opacity)
+            
+            let numberOfItemsCheck = (cards[0].content.numberOfItems == cards[1].content.numberOfItems && cards[1].content.numberOfItems == cards[2].content.numberOfItems) ||  (cards[0].content.numberOfItems != cards[1].content.numberOfItems && cards[1].content.numberOfItems != cards[2].content.numberOfItems  && cards[0].content.numberOfItems != cards[2].content.numberOfItems)
+            
+            let shapeCheck = (cards[0].content.shape == cards[1].content.shape && cards[1].content.shape == cards[2].content.shape) || (cards[0].content.shape != cards[1].content.shape && cards[1].content.shape != cards[2].content.shape  && cards[0].content.shape != cards[2].content.shape)
+            
+            let colorCheck = (cards[0].content.colorName == cards[1].content.colorName && cards[1].content.colorName == cards[2].content.colorName) || (cards[0].content.colorName != cards[1].content.colorName && cards[1].content.colorName != cards[2].content.colorName  && cards[0].content.colorName != cards[2].content.colorName)
+            
+            
+            return opacityCheck && numberOfItemsCheck && shapeCheck && colorCheck
+        }
     }
     
     func shuffle() -> Void {
@@ -68,6 +79,10 @@ class GameSetViewModel: ObservableObject {
     }
      func addThreeMoreCards() -> Void {
          gameModel.addNumberOfCards(3)
+    }
+    
+    func setIsChosen() -> Bool {
+        true
     }
     
 }
@@ -85,7 +100,7 @@ enum OneOfThree: CaseIterable {
     }
     var opacity: Double {
         switch self {
-        case .one: 0.0
+        case .one: 0.15
         case .two: 0.5
         case .three: 1
         }

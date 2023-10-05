@@ -7,7 +7,11 @@
 
 import Foundation
 
-struct CardContent: Equatable {
+struct CardContent: Equatable, CustomStringConvertible  {
+    var description: String {
+        "color - \(colorName), opacity - \(opacity), shape - \(shape.description), items - \(numberOfItems)"
+    }
+    
     static func == (lhs: CardContent, rhs: CardContent) -> Bool {
         return lhs.colorName == rhs.colorName &&
         lhs.opacity == rhs.opacity &&
@@ -34,9 +38,9 @@ struct CardContent: Equatable {
         
         var description: String {
             switch self {
-            case .circle: "Shape is a circle"
-            case .roundedRectangle(let cornerRadius): "Shape is a roundedRectangle with corner radius - \(cornerRadius)"
-            case .ellipse: "Shape is a ellipse"
+            case .circle: "Circle"
+            case .roundedRectangle(let cornerRadius): "Rounded Rectangle"
+            case .ellipse: "Ellipse"
             }
         }
     }
