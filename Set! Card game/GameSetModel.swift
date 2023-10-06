@@ -25,7 +25,7 @@ struct GameSetModel<CardContent: Equatable> {
             deck.append(Card(content: content))
         }
         deck.shuffle()
-        addNumberOfCards(12)
+        addNumberOfCardsToTheTable(12)
     }
     
     mutating func shuffle() {
@@ -33,24 +33,24 @@ struct GameSetModel<CardContent: Equatable> {
     }
     
     var chosenExactlyThreeCards: Bool {
-        return deck.filter{$0.isChosen}.count == 3
+        get { deck.filter{$0.isChosen}.count == 3 }
+        set { deck.indices.forEach { deck[$0].oneOfThreeSelected = newValue} }
     }
     
     mutating func choose(_ card: GameSetModel<CardContent>.Card, setLogic: (_ cards: [Card]) -> Bool) -> Void {
         if let index = deck.firstIndex(where: {$0.id == card.id}) {
-            
             if chosenExactlyThreeCards {
                 //user selectes card whet already 3 cards has been selected
                 if card.isChosen {
-                    //user shosen one of thee selected cards
+                    //user shosen one of selected cards
                     if checkTheSet(withLogic: setLogic) {
                         //set on the table
                         //do nothing
                     } else {
                         //no set on the table
                         //deselect 3 cards and select chosen one again
-                        removeIsChosen()
-                        unselectThreeCards()
+                        chosenExactlyThreeCards = false
+                        unselectAllCards()
                         deck[index].isChosen.toggle()
                     }
                 } else {
@@ -59,13 +59,13 @@ struct GameSetModel<CardContent: Equatable> {
                         //set on the table
                         //replace the set with new 3 cards from a deck or delete empty spots if deck is empty
                         replaceMachedCards()
-                        removeIsChosen()
+                        unselectAllCards()
                         deck[index].isChosen.toggle()
                     } else {
                         //no set on the table
                         //deselect 3 cards and select a new one
-                        removeIsChosen()
-                        unselectThreeCards()
+                        unselectAllCards()
+                        chosenExactlyThreeCards = false
                         deck[index].isChosen.toggle()
                     }
                 }
@@ -74,25 +74,15 @@ struct GameSetModel<CardContent: Equatable> {
                 deck[index].isChosen.toggle()
                 if chosenExactlyThreeCards {
                     //user selected 3rd
-                    selectThreeCards()
                     if checkTheSet(withLogic: setLogic) {
-                        togleSet()
+                        markCardsFromSet()
                     }
                 }
             }
         }
     }
     
-    mutating func selectThreeCards() {
-        deck.compactMap {$0.isChosen ? $0.id : nil}
-            .forEach {id in
-                if let index = deck.firstIndex(where: { $0.id == id }) {
-                    deck[index].oneOfThreeSelected = true
-                }
-            }
-    }
-    
-    mutating func togleSet() {
+    mutating func markCardsFromSet() {
         deck.compactMap {$0.isChosen ? $0.id : nil}
             .forEach {id in
                 if let index = deck.firstIndex(where: { $0.id == id }) {
@@ -114,16 +104,7 @@ struct GameSetModel<CardContent: Equatable> {
         return logic(selectedCards)
     }
     
-    mutating func unselectThreeCards() {
-        deck.compactMap { $0.oneOfThreeSelected ? $0.id : nil }
-            .forEach { id in
-                if let index = deck.firstIndex(where: { $0.id == id }) {
-                    deck[index].oneOfThreeSelected = false
-                }
-            }
-    }
-    
-    mutating func removeIsChosen() {
+    mutating func unselectAllCards() {
         deck.compactMap { $0.isChosen ? $0.id : nil }
             .forEach { id in
                 if let index = deck.firstIndex(where: { $0.id == id }) {
@@ -132,8 +113,7 @@ struct GameSetModel<CardContent: Equatable> {
             }
     }
     
-
-    mutating func addNumberOfCards(_ numberOfCards: Int) {
+    mutating func addNumberOfCardsToTheTable(_ numberOfCards: Int) {
         var cardsAdded = 0
         for index in deck.indices where !deck[index].onTheTable {
             deck[index].onTheTable = true

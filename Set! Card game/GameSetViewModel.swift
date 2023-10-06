@@ -78,7 +78,7 @@ class GameSetViewModel: ObservableObject {
         gameModel.shuffle()
     }
      func addThreeMoreCards() -> Void {
-         gameModel.addNumberOfCards(3)
+         gameModel.addNumberOfCardsToTheTable(3)
     }
     
     func setIsChosen() -> Bool {
