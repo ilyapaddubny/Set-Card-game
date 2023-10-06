@@ -32,60 +32,89 @@ struct GameSetModel<CardContent: Equatable> {
         deck.shuffle()
     }
     
-    
+    var chosenExactlyThreeCards: Bool {
+        return deck.filter{$0.isChosen}.count == 3
+    }
     
     mutating func choose(_ card: GameSetModel<CardContent>.Card, setLogic: (_ cards: [Card]) -> Bool) -> Void {
-        
-        if numberOfCardsAreSelected < 3 || (card.isChosen && numberOfCardsAreSelected != 3){
-            if let cardIndex = deck.firstIndex(where: {$0.id == card.id}) {
-                deck[cardIndex].isChosen.toggle()
-                removeOneOfThreeSelection()
-                removeIsMached()
-            }
-        }
-        
-        //set attempt
-        if numberOfCardsAreSelected == 3 {
-            var selectedCards = [Card]()
+        if let index = deck.firstIndex(where: {$0.id == card.id}) {
             
-            //one of three selected logic
-            deck.compactMap { $0.isChosen ? $0.id : nil}
-                .forEach { id in
-                    if let index = deck.firstIndex(where: {$0.id == id}) {
-                        deck[index].oneOfThreeSelected = true
-                        selectedCards.append(deck[index])
+            if chosenExactlyThreeCards {
+                //user selectes card whet already 3 cards has been selected
+                if card.isChosen {
+                    //user shosen one of thee selected cards
+                    if checkTheSet(withLogic: setLogic) {
+                        //set on the table
+                        //do nothing
+                    } else {
+                        //no set on the table
+                        //deselect 3 cards and select chosen one again
+                        removeIsChosen()
+                        unselectThreeCards()
+                        deck[index].isChosen.toggle()
                     }
-            }
-            
-            let nextCardIndex = selectedCards.firstIndex{$0.id == card.id}
-            
-            if checkTheSetOf(selectedCards, withLogic: setLogic) {
-                //it's a Set!
-                deck.compactMap {$0.isChosen ? $0.id : nil}
-                    .forEach {id in
-                        if let index = deck.firstIndex(where: {$0.id == id}) {
-                            deck[index].isMatched = true
-                            //When any card is touched on and there are already 3 matching Set cards selected, then...
-                            guard nextCardIndex != nil else {
-                                //...seletc the chosen card
-                                if let cardIndex = deck.firstIndex(where: {$0.id == card.id}) {
-                                    deck[cardIndex].isChosen = true
-                                }
-                                //...and deal with Set!
-                                replaceCard(at: index)
-                                return
-                            }
-                        }
+                } else {
+                    //user selects the another (4th card)
+                    if checkTheSet(withLogic: setLogic) {
+                        //set on the table
+                        //replace the set with new 3 cards from a deck or delete empty spots if deck is empty
+                        replaceMachedCards()
+                        removeIsChosen()
+                        deck[index].isChosen.toggle()
+                    } else {
+                        //no set on the table
+                        //deselect 3 cards and select a new one
+                        removeIsChosen()
+                        unselectThreeCards()
+                        deck[index].isChosen.toggle()
                     }
+                }
+            } else {
+                //user selected 1st, 2nd or 3rd card
+                deck[index].isChosen.toggle()
+                if chosenExactlyThreeCards {
+                    //user selected 3rd
+                    selectThreeCards()
+                    if checkTheSet(withLogic: setLogic) {
+                        togleSet()
+                    }
+                }
             }
         }
     }
     
-    mutating func checkTheSetOf(_ cards: [Card], withLogic logic: (_ cards: [Card]) -> Bool) -> Bool {
-            return logic(cards)
-        }
+    mutating func selectThreeCards() {
+        deck.compactMap {$0.isChosen ? $0.id : nil}
+            .forEach {id in
+                if let index = deck.firstIndex(where: { $0.id == id }) {
+                    deck[index].oneOfThreeSelected = true
+                }
+            }
+    }
     
-    mutating func removeOneOfThreeSelection() {
+    mutating func togleSet() {
+        deck.compactMap {$0.isChosen ? $0.id : nil}
+            .forEach {id in
+                if let index = deck.firstIndex(where: { $0.id == id }) {
+                    deck[index].isMatched = true
+                }
+            }
+    }
+    
+    mutating func checkTheSet(withLogic logic: (_ cards: [Card]) -> Bool) -> Bool {
+        var selectedCards = [Card]()
+        deck.compactMap { $0.isChosen ? $0.id : nil}
+            .forEach { id in
+                if let index = deck.firstIndex(where: {$0.id == id}) {
+                    deck[index].oneOfThreeSelected = true
+                    selectedCards.append(deck[index])
+                }
+            }
+        
+        return logic(selectedCards)
+    }
+    
+    mutating func unselectThreeCards() {
         deck.compactMap { $0.oneOfThreeSelected ? $0.id : nil }
             .forEach { id in
                 if let index = deck.firstIndex(where: { $0.id == id }) {
@@ -94,11 +123,11 @@ struct GameSetModel<CardContent: Equatable> {
             }
     }
     
-    mutating func removeIsMached() {
-        deck.compactMap { $0.isMatched ? $0.id : nil }
+    mutating func removeIsChosen() {
+        deck.compactMap { $0.isChosen ? $0.id : nil }
             .forEach { id in
                 if let index = deck.firstIndex(where: { $0.id == id }) {
-                    deck[index].isMatched = false
+                    deck[index].isChosen = false
                 }
             }
     }
@@ -115,7 +144,16 @@ struct GameSetModel<CardContent: Equatable> {
         }
     }
     
-    mutating func replaceCard(at index: Int){
+    private mutating func replaceMachedCards() {
+        deck.compactMap { $0.isMatched ? $0.id : nil }
+            .forEach { id in
+                if let index = deck.firstIndex(where: { $0.id == id }) {
+                    replaceCard(at: index)
+                }
+            }
+    }
+    
+    private mutating func replaceCard(at index: Int){
         if let newCardFromDeckIndex = deck.firstIndex(where: {!$0.onTheTable}) {
             // ...replace those 3 matching Set cards with new ones
             deck[index] = deck[newCardFromDeckIndex]
@@ -128,7 +166,6 @@ struct GameSetModel<CardContent: Equatable> {
         
     }
 
-    
     struct Card: Identifiable, Equatable, CustomStringConvertible {
         static func == (lhs: GameSetModel<CardContent>.Card, rhs: GameSetModel<CardContent>.Card) -> Bool {
             return lhs.content == rhs.content && 

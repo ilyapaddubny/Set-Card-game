@@ -39,7 +39,7 @@ struct CardContent: Equatable, CustomStringConvertible  {
         var description: String {
             switch self {
             case .circle: "Circle"
-            case .roundedRectangle(let cornerRadius): "Rounded Rectangle"
+            case .roundedRectangle: "Rounded Rectangle"
             case .ellipse: "Ellipse"
             }
         }
