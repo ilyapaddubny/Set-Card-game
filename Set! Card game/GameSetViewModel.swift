@@ -9,13 +9,14 @@ import Foundation
 import SwiftUI
 
 class GameSetViewModel: ObservableObject {
+    typealias Card = GameSetModel<CardContent>.Card
     
     private static let contentArray: [Text] = Array(repeating: Text("1"), count: 81)
     private static var contentArrayShape = [CardContent]()
    
     
     private static func fetchContentArray() {
-        
+        contentArrayShape = [CardContent]()
         for colorCases in OneOfThree.allCases {
             let colorName = colorCases.colorName
             
@@ -42,7 +43,7 @@ class GameSetViewModel: ObservableObject {
             if contentArrayShape.indices.contains(index){
                 contentArrayShape[index]
             } else {
-                CardContent(colorName: "blue", opacity: 0, shape: .ellipse, numberOfItems: 1)
+                CardContent(colorName: "blue", opacity: 0, shape: .diamond, numberOfItems: 1)
             }
         }
         
@@ -50,15 +51,15 @@ class GameSetViewModel: ObservableObject {
     
     @Published var gameModel = createGame()
     
-    
-    
-    var cards: [GameSetModel<CardContent>.Card] {
+    var cards: [Card] {
         gameModel.deck
     }
     
+    func setSelected() -> Bool {gameModel.ifSetSelected()}
+    
     // MARK: - Intents
     
-    func choose(_ card: GameSetModel<CardContent>.Card) -> Void {
+    func choose(_ card: Card) -> Void {
         gameModel.choose(card) {cards in
             let opacityCheck = (cards[0].content.opacity == cards[1].content.opacity && cards[1].content.opacity == cards[2].content.opacity) ||
             (cards[0].content.opacity != cards[1].content.opacity && cards[1].content.opacity != cards[2].content.opacity  && cards[0].content.opacity != cards[2].content.opacity)
@@ -81,9 +82,9 @@ class GameSetViewModel: ObservableObject {
          gameModel.addNumberOfCardsToTheTable(3)
     }
     
-    func setIsChosen() -> Bool {
-        true
-    }
+    func replaceMachedCards() {gameModel.replaceMachedCards()}
+    
+    func newGame() {gameModel = GameSetViewModel.createGame()}
     
 }
 
@@ -100,16 +101,16 @@ enum OneOfThree: CaseIterable {
     }
     var opacity: Double {
         switch self {
-        case .one: 0.15
-        case .two: 0.5
+        case .one: 0.0
+        case .two: 0.4
         case .three: 1
         }
     }
     var shape: CardContent.ShapeType {
         switch self {
         case .one: CardContent.ShapeType.circle
-        case .two: CardContent.ShapeType.ellipse
-        case .three: CardContent.ShapeType.roundedRectangle(cornerRadius: 0)
+        case .two: CardContent.ShapeType.diamond
+        case .three: CardContent.ShapeType.wavedShape
         }
     }
     var numberOfItems: Int {

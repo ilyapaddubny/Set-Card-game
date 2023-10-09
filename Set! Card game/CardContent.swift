@@ -33,14 +33,14 @@ struct CardContent: Equatable, CustomStringConvertible  {
     
     enum ShapeType: Equatable {
         case circle
-        case roundedRectangle(cornerRadius: CGFloat)
-        case ellipse
+        case wavedShape
+        case diamond
         
         var description: String {
             switch self {
             case .circle: "Circle"
-            case .roundedRectangle: "Rounded Rectangle"
-            case .ellipse: "Ellipse"
+            case .wavedShape: "Waved shape"
+            case .diamond: "Diamond"
             }
         }
     }
