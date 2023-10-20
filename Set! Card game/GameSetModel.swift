@@ -12,6 +12,7 @@ import Foundation
 
 struct GameSetModel<CardContent: Equatable> {
     private(set) var deck = [Card]()
+    private(set) var discardPile = [Card]()
     
     init(numberOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         for index in 0..<numberOfCards {
@@ -51,8 +52,8 @@ struct GameSetModel<CardContent: Equatable> {
                     //user selects the another (4th card)
                     if checkTheSet(withLogic: setLogic) {
                         //set on the table
-                        //replace the set with new 3 cards from a deck or delete empty spots if deck is empty
-                        replaceMachedCards()
+//                        replaceMachedCards() //replace the set with new 3 cards from a deck or delete empty spots if deck is empty
+                        removeMachedCards() //remove 3 cards from the table
                         unselectAllCards()
                         if let newIndex = deck.firstIndex(where: {$0.id == card.id}) {
                             //since the array size has been shanged
@@ -121,6 +122,29 @@ struct GameSetModel<CardContent: Equatable> {
         }
     }
     
+    
+    mutating func removeMachedCards() {
+        deck.compactMap { $0.isMatched ? $0.id : nil }
+            .forEach { id in
+                if let index = deck.firstIndex(where: { $0.id == id }) {
+                    removeCard(at: index)
+                }
+            }
+    }
+    
+    private mutating func removeCard(at index: Int) {
+        discardPile.append(deck[index])
+        deck.remove(at: index)
+    }
+    
+    mutating func shuffle() {
+        deck.shuffle()
+    }
+    
+    func ifSetSelected() -> Bool {setSelected}
+    
+    /*
+     // Code was depricated since the logic has changed
     mutating func replaceMachedCards() {
         deck.compactMap { $0.isMatched ? $0.id : nil }
             .forEach { id in
@@ -128,10 +152,6 @@ struct GameSetModel<CardContent: Equatable> {
                     replaceCard(at: index)
                 }
             }
-    }
-    
-    mutating func shuffle() {
-        deck.shuffle()
     }
     
     private mutating func replaceCard(at index: Int){
@@ -150,8 +170,7 @@ struct GameSetModel<CardContent: Equatable> {
         }
         
     }
-    
-    func ifSetSelected() -> Bool {setSelected}
+     */
 
     struct Card: Identifiable, Equatable, CustomStringConvertible {
         static func == (lhs: GameSetModel<CardContent>.Card, rhs: GameSetModel<CardContent>.Card) -> Bool {
@@ -168,6 +187,7 @@ struct GameSetModel<CardContent: Equatable> {
         var id = UUID()
         
         var isMatched = false
+        var isFaceUp = true
         var isChosen = false
         var onTheTable = false
         var oneOfThreeSelected = false

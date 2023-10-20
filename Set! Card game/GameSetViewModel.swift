@@ -55,7 +55,12 @@ class GameSetViewModel: ObservableObject {
         gameModel.deck
     }
     
+    var discardPile: [Card] {
+        gameModel.discardPile
+    }
+    
     func setSelected() -> Bool {gameModel.ifSetSelected()}
+    
     
     // MARK: - Intents
     
@@ -82,7 +87,8 @@ class GameSetViewModel: ObservableObject {
          gameModel.addNumberOfCardsToTheTable(3)
     }
     
-    func replaceMachedCards() {gameModel.replaceMachedCards()}
+//    func replaceMachedCards() {gameModel.replaceMachedCards()}
+    func removeMachedCards() {gameModel.removeMachedCards()}
     
     func newGame() {gameModel = GameSetViewModel.createGame()}
     
@@ -121,7 +127,6 @@ enum OneOfThree: CaseIterable {
         }
     }
 }
-
 
 
 extension CardContent {
