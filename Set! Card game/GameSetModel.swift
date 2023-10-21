@@ -97,14 +97,20 @@ struct GameSetModel<CardContent: Equatable> {
             }
     }
     
-    mutating func newGame(numberOfCards: Int, cardContentFactory: (Int) -> CardContent) {
-        deck.removeAll()
+    mutating func newGame() {
+        discardPile.forEach {
+            deck.append($0)
+        }
         discardPile.removeAll()
         
-        for index in 0..<numberOfCards {
-            let content = cardContentFactory(index)
-            deck.append(Card(content: content))
+        for index in deck.indices {
+            deck[index].isChosen = false
+            deck[index].onTheTable = false
+            deck[index].isMatched = false
+            deck[index].oneOfThreeSelected = false
         }
+        
+        
         deck.shuffle()
         addNumberOfCardsToTheTable(12)
     }

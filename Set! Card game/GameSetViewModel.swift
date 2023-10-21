@@ -94,13 +94,7 @@ class GameSetViewModel: ObservableObject {
     
     
     func newGame() {
-        gameModel.newGame(numberOfCards: 81, cardContentFactory: { index in
-            if GameSetViewModel.contentArrayShape.indices.contains(index) {
-                return GameSetViewModel.contentArrayShape[index]
-            } else {
-                return CardContent(colorName: "blue", opacity: 0, shape: .diamond, numberOfItems: 1)
-            }
-        })
+        gameModel.newGame()
     }
 }
 
