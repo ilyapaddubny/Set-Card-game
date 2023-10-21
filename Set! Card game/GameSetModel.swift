@@ -12,7 +12,15 @@ import Foundation
 
 struct GameSetModel<CardContent: Equatable> {
     private(set) var deck = [Card]()
-    private(set) var discardPile = [Card]()
+    private(set) var discardPile = [Card]() {
+        didSet {
+            for index in discardPile.indices {
+                discardPile[index].isChosen = false
+                discardPile[index].isMatched = false
+                discardPile[index].oneOfThreeSelected = false
+            }
+        }
+    }
     
     init(numberOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         for index in 0..<numberOfCards {
@@ -89,6 +97,18 @@ struct GameSetModel<CardContent: Equatable> {
             }
     }
     
+    mutating func newGame(numberOfCards: Int, cardContentFactory: (Int) -> CardContent) {
+        deck.removeAll()
+        discardPile.removeAll()
+        
+        for index in 0..<numberOfCards {
+            let content = cardContentFactory(index)
+            deck.append(Card(content: content))
+        }
+        deck.shuffle()
+        addNumberOfCardsToTheTable(12)
+    }
+    
     mutating func checkTheSet(withLogic logic: (_ cards: [Card]) -> Bool) -> Bool {
         var selectedCards = [Card]()
         deck.compactMap { $0.isChosen ? $0.id : nil}
@@ -143,7 +163,7 @@ struct GameSetModel<CardContent: Equatable> {
     
     func ifSetSelected() -> Bool {setSelected}
     
-    /*
+    
      // Code was depricated since the logic has changed
     mutating func replaceMachedCards() {
         deck.compactMap { $0.isMatched ? $0.id : nil }
@@ -159,18 +179,20 @@ struct GameSetModel<CardContent: Equatable> {
             // ...replace those 3 matching Set cards with new ones
             var newCard = deck[newCardFromDeckIndex]
             newCard.onTheTable = true
-            newCard.isChosen = true
+//            newCard.isChosen = true
+            discardPile.append(deck[index])
             deck[index] = newCard
             deck.remove(at: newCardFromDeckIndex)
             print("✅ newCardFromDeckIndex    deck.remove(at: \(index))")
         } else {
             // ...deck is empty. Remove card from the screen
+            discardPile.append(deck[index])
             deck.remove(at: index)
             print("✅    deck.remove(at: \(index))")
         }
         
     }
-     */
+    
 
     struct Card: Identifiable, Equatable, CustomStringConvertible {
         static func == (lhs: GameSetModel<CardContent>.Card, rhs: GameSetModel<CardContent>.Card) -> Bool {
@@ -187,7 +209,6 @@ struct GameSetModel<CardContent: Equatable> {
         var id = UUID()
         
         var isMatched = false
-        var isFaceUp = true
         var isChosen = false
         var onTheTable = false
         var oneOfThreeSelected = false

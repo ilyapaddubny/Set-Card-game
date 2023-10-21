@@ -13,7 +13,7 @@ class GameSetViewModel: ObservableObject {
     
     private static let contentArray: [Text] = Array(repeating: Text("1"), count: 81)
     private static var contentArrayShape = [CardContent]()
-   
+    
     
     private static func fetchContentArray() {
         contentArrayShape = [CardContent]()
@@ -83,17 +83,26 @@ class GameSetViewModel: ObservableObject {
     func shuffle() -> Void {
         gameModel.shuffle()
     }
-     func addThreeMoreCards() -> Void {
-         gameModel.addNumberOfCardsToTheTable(3)
+    func addThreeMoreCards() -> Void {
+        gameModel.addNumberOfCardsToTheTable(3)
     }
     
-//    func replaceMachedCards() {gameModel.replaceMachedCards()}
+    //    func replaceMachedCards() {gameModel.replaceMachedCards()}
     func removeMachedCards() {gameModel.removeMachedCards()}
+    func replaceMachedCards() {gameModel.replaceMachedCards()}
     
-    func newGame() {gameModel = GameSetViewModel.createGame()}
     
+    
+    func newGame() {
+        gameModel.newGame(numberOfCards: 81, cardContentFactory: { index in
+            if GameSetViewModel.contentArrayShape.indices.contains(index) {
+                return GameSetViewModel.contentArrayShape[index]
+            } else {
+                return CardContent(colorName: "blue", opacity: 0, shape: .diamond, numberOfItems: 1)
+            }
+        })
+    }
 }
-
 
 enum OneOfThree: CaseIterable {
     case one, two, three
@@ -128,20 +137,20 @@ enum OneOfThree: CaseIterable {
     }
 }
 
-
-extension CardContent {
-    var color: Color {
-        get {
-            switch colorName {
-            case "red":
-                Color.red
-            case "blue":
-                Color.blue
-            case "green":
-                Color.green
-            default:
-                Color.black
+    extension CardContent {
+        var color: Color {
+            get {
+                switch colorName {
+                case "red":
+                    Color.red
+                case "blue":
+                    Color.blue
+                case "green":
+                    Color.green
+                default:
+                    Color.black
+                }
             }
         }
     }
-}
+

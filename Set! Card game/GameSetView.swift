@@ -30,6 +30,7 @@ struct GameSetView: View {
             if card.onTheTable {
                 CardView(card)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                    .matchedGeometryEffect(id: card.id, in: discardCards)
                     .padding(4)
                     .onTapGesture {
                         viewModel.choose(card)
@@ -47,7 +48,7 @@ struct GameSetView: View {
         HStack {
             discardPile
             Spacer()
-            newGaveButton
+            newGameButton
             Spacer()
             deck
         }.padding()
@@ -64,6 +65,7 @@ struct GameSetView: View {
     }
     @Namespace private var dealingNamespace
     
+    
     var deck: some View {
         ZStack {
             ForEach(undealtCards) { card in
@@ -75,9 +77,9 @@ struct GameSetView: View {
         .onTapGesture {
             withAnimation(.easeInOut) {
                 if viewModel.setSelected() {
-                    //                    viewModel.replaceMachedCards()
-                    viewModel.removeMachedCards()
-                    viewModel.addThreeMoreCards()
+                    viewModel.replaceMachedCards()
+//                    viewModel.removeMachedCards()
+//                    viewModel.addThreeMoreCards()
                 } else {
                     viewModel.addThreeMoreCards()
                 }
@@ -86,7 +88,7 @@ struct GameSetView: View {
         }
     }
     
-    var newGaveButton: some View {
+    var newGameButton: some View {
         Button {
             viewModel.newGame()
         } label: {
@@ -101,11 +103,14 @@ struct GameSetView: View {
         }
     }
     
+    @Namespace private var discardCards
+    
     var discardPile: some View {
         ZStack {
             CardView()
             ForEach(viewModel.discardPile) { card in
                 CardView(card)
+                    .matchedGeometryEffect(id: card.id, in: discardCards)
             }
         }.frame(width: discardPileWith, height: discardPileWith / cardAspectRatio)
     }
