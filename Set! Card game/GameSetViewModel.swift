@@ -14,8 +14,6 @@ class GameSetViewModel: ObservableObject {
     private static let contentArray: [Text] = Array(repeating: Text("1"), count: 81)
     private static var contentArrayShape = [CardContent]()
     
-    
-    
     private static func fetchContentArray() {
         contentArrayShape = [CardContent]()
         for colorCases in OneOfThree.allCases {

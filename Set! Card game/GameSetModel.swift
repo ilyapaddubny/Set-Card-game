@@ -140,7 +140,6 @@ struct GameSetModel<CardContent: Equatable> {
     mutating func addNumberOfCardsToTheTable(_ numberOfCards: Int) {
         var cardsAdded = 0
         for index in deck.indices where !deck[index].onTheTable {
-            print("✅ \(index)")
             deck[index].onTheTable = true
             cardsAdded += 1
             if cardsAdded >= numberOfCards {
@@ -165,10 +164,7 @@ struct GameSetModel<CardContent: Equatable> {
     }
     
     mutating func shuffle() {
-        deck.shuffle()
-//        let newShaffledDeck = deck.shuffled()
-        
-        
+        deck = deck.filter { $0.onTheTable }.shuffled() + deck.filter { !$0.onTheTable }
     }
     
     func ifSetSelected() -> Bool {setSelected}
@@ -193,12 +189,10 @@ struct GameSetModel<CardContent: Equatable> {
             discardPile.append(deck[index])
             deck[index] = newCard
             deck.remove(at: newCardFromDeckIndex)
-            print("✅ newCardFromDeckIndex    deck.remove(at: \(index))")
         } else {
             // ...deck is empty. Remove card from the screen
             discardPile.append(deck[index])
             deck.remove(at: index)
-            print("✅    deck.remove(at: \(index))")
         }
         
     }
