@@ -10,6 +10,7 @@ import SwiftUI
 struct CardView: View {
     typealias Card = GameSetModel<CardContent>.Card
     
+    
     let card: Card
     private let shapeAspectRatio: CGFloat = 2/1
     private let cardAspectRatio: CGFloat = 2/3
@@ -67,6 +68,7 @@ struct CardView: View {
                     .fill(Color.mint)
             }
         }
+        
     }
     
     private var blankCardView: some View {

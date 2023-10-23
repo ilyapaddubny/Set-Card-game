@@ -15,6 +15,7 @@ class GameSetViewModel: ObservableObject {
     private static var contentArrayShape = [CardContent]()
     
     
+    
     private static func fetchContentArray() {
         contentArrayShape = [CardContent]()
         for colorCases in OneOfThree.allCases {
@@ -75,10 +76,19 @@ class GameSetViewModel: ObservableObject {
             
             let colorCheck = (cards[0].content.colorName == cards[1].content.colorName && cards[1].content.colorName == cards[2].content.colorName) || (cards[0].content.colorName != cards[1].content.colorName && cards[1].content.colorName != cards[2].content.colorName  && cards[0].content.colorName != cards[2].content.colorName)
             
-            
             return opacityCheck && numberOfItemsCheck && shapeCheck && colorCheck
         }
+        
     }
+    
+    func missAtimation(card: Card, value: Int) -> Int {
+        var valueNew = value
+        if(!card.isMatched && card.oneOfThreeSelected && card.onTheTable) {
+            valueNew += 1
+            return valueNew
+        }
+        return value
+   }
     
     func shuffle() -> Void {
         gameModel.shuffle()
@@ -96,6 +106,8 @@ class GameSetViewModel: ObservableObject {
     func newGame() {
         gameModel.newGame()
     }
+    
+    
 }
 
 enum OneOfThree: CaseIterable {

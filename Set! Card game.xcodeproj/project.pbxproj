@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		2D214D112AE670B400FD19F5 /* FlyingText.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D214D102AE670B400FD19F5 /* FlyingText.swift */; };
+		2D214D132AE68C2900FD19F5 /* Shake.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D214D122AE68C2800FD19F5 /* Shake.swift */; };
 		2D2BDCB22AD073F000BA4AA7 /* DiamondShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2BDCB12AD073F000BA4AA7 /* DiamondShape.swift */; };
 		2D2BDCB42AD075FC00BA4AA7 /* WaveShape.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D2BDCB32AD075FC00BA4AA7 /* WaveShape.swift */; };
 		2D4F6B0B2AC4586E00A70012 /* Set__Card_gameApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2D4F6B0A2AC4586E00A70012 /* Set__Card_gameApp.swift */; };
@@ -41,6 +43,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		2D214D102AE670B400FD19F5 /* FlyingText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlyingText.swift; sourceTree = "<group>"; };
+		2D214D122AE68C2800FD19F5 /* Shake.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Shake.swift; sourceTree = "<group>"; };
 		2D2BDCB12AD073F000BA4AA7 /* DiamondShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiamondShape.swift; sourceTree = "<group>"; };
 		2D2BDCB32AD075FC00BA4AA7 /* WaveShape.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveShape.swift; sourceTree = "<group>"; };
 		2D4F6B072AC4586E00A70012 /* Set! Card game.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Set! Card game.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -111,6 +115,7 @@
 			children = (
 				2D4F6B0A2AC4586E00A70012 /* Set__Card_gameApp.swift */,
 				2D4F6B0C2AC4586E00A70012 /* GameSetView.swift */,
+				2D214D122AE68C2800FD19F5 /* Shake.swift */,
 				2D2BDCB32AD075FC00BA4AA7 /* WaveShape.swift */,
 				2D4F6B352AC45A6100A70012 /* GameSetViewModel.swift */,
 				2D4F6B392AC5AEDA00A70012 /* CardContent.swift */,
@@ -120,6 +125,7 @@
 				2D4F6B102AC4587000A70012 /* Set__Card_game.entitlements */,
 				2D4F6B112AC4587000A70012 /* Preview Content */,
 				2D4F6B3B2AC5E20B00A70012 /* AspectVGrid.swift */,
+				2D214D102AE670B400FD19F5 /* FlyingText.swift */,
 				2D2BDCB12AD073F000BA4AA7 /* DiamondShape.swift */,
 			);
 			path = "Set! Card game";
@@ -283,10 +289,12 @@
 				2D4F6B362AC45A6200A70012 /* GameSetViewModel.swift in Sources */,
 				2DAF640F2AD312CF00324A86 /* CardView.swift in Sources */,
 				2D4F6B3A2AC5AEDA00A70012 /* CardContent.swift in Sources */,
+				2D214D132AE68C2900FD19F5 /* Shake.swift in Sources */,
 				2D4F6B3C2AC5E20B00A70012 /* AspectVGrid.swift in Sources */,
 				2D2BDCB22AD073F000BA4AA7 /* DiamondShape.swift in Sources */,
 				2D4F6B0D2AC4586E00A70012 /* GameSetView.swift in Sources */,
 				2D4F6B382AC45A8200A70012 /* GameSetModel.swift in Sources */,
+				2D214D112AE670B400FD19F5 /* FlyingText.swift in Sources */,
 				2D2BDCB42AD075FC00BA4AA7 /* WaveShape.swift in Sources */,
 				2D4F6B0B2AC4586E00A70012 /* Set__Card_gameApp.swift in Sources */,
 			);

@@ -38,6 +38,7 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                         }
                     }
                 }
+                .transition(/*@START_MENU_TOKEN@*/.identity/*@END_MENU_TOKEN@*/)
             } else {
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: gridItemSize), spacing: 0)], spacing: 0) {
                     ForEach(items) { item in
@@ -45,6 +46,7 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
                             .aspectRatio(aspectRatio, contentMode: .fit)
                     }
                 }
+                .transition(/*@START_MENU_TOKEN@*/.identity/*@END_MENU_TOKEN@*/)
             }
         }
     }

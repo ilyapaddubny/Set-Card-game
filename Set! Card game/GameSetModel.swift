@@ -7,11 +7,11 @@
 
 import Foundation
 
-
-                    
-
 struct GameSetModel<CardContent: Equatable> {
     private(set) var deck = [Card]()
+    
+    private(set) var deckNotOnTheTable = [Card]()
+    
     private(set) var discardPile = [Card]() {
         didSet {
             for index in discardPile.indices {
@@ -140,6 +140,7 @@ struct GameSetModel<CardContent: Equatable> {
     mutating func addNumberOfCardsToTheTable(_ numberOfCards: Int) {
         var cardsAdded = 0
         for index in deck.indices where !deck[index].onTheTable {
+            print("✅ \(index)")
             deck[index].onTheTable = true
             cardsAdded += 1
             if cardsAdded >= numberOfCards {
@@ -165,6 +166,9 @@ struct GameSetModel<CardContent: Equatable> {
     
     mutating func shuffle() {
         deck.shuffle()
+//        let newShaffledDeck = deck.shuffled()
+        
+        
     }
     
     func ifSetSelected() -> Bool {setSelected}
