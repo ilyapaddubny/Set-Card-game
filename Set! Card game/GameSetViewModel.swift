@@ -14,6 +14,10 @@ class GameSetViewModel: ObservableObject {
     private static let contentArray: [Text] = Array(repeating: Text("1"), count: 81)
     private static var contentArrayShape = [CardContent]()
     
+    var counter = 0
+    var offsetLastCards = (x: CGFloat(0), y: CGFloat(0))
+
+    
     private static func fetchContentArray() {
         contentArrayShape = [CardContent]()
         for colorCases in OneOfThree.allCases {
@@ -60,6 +64,17 @@ class GameSetViewModel: ObservableObject {
     
     func setSelected() -> Bool {gameModel.ifSetSelected()}
     
+    func offsetFor(_ card: Card) -> (x: CGFloat, y: CGFloat) {
+//        if  offsetLastCards.x < -5 {
+//            offsetLastCards = (x: CGFloat(0), y: CGFloat(0))
+//        }
+        offsetLastCards.x -= 2
+        offsetLastCards.y -= 1
+        
+        print((offsetLastCards.x, offsetLastCards.y))
+        return (offsetLastCards.x, offsetLastCards.y)
+    }
+    
     
     // MARK: - Intents
     
@@ -89,19 +104,23 @@ class GameSetViewModel: ObservableObject {
    }
     
     func shuffle() -> Void {
+        offsetLastCards = (x: CGFloat(0), y: CGFloat(0))
         gameModel.shuffle()
     }
     func addThreeMoreCards() -> Void {
+        offsetLastCards = (x: CGFloat(0), y: CGFloat(0))
         gameModel.addNumberOfCardsToTheTable(3)
     }
     
-    //    func replaceMachedCards() {gameModel.replaceMachedCards()}
     func removeMachedCards() {gameModel.removeMachedCards()}
-    func replaceMachedCards() {gameModel.replaceMachedCards()}
+    func replaceMachedCards() {
+        offsetLastCards = (x: CGFloat(0), y: CGFloat(0))
+        gameModel.replaceMachedCards()}
     
     
     
     func newGame() {
+        offsetLastCards = (x: CGFloat(0), y: CGFloat(0))
         gameModel.newGame()
     }
     

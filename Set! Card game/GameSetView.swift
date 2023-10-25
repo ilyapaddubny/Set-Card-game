@@ -13,11 +13,14 @@ struct GameSetView: View {
     @StateObject var viewModel = GameSetViewModel()
     private let discardPileWith = 50.0
     private let cardAspectRatio: CGFloat = 2/3
+   
+    
     
     @Namespace private var dealingNamespace
     @Namespace private var discardCards
     
     var body: some View {
+       
         VStack {
             Text("Set").font(.title)
             cards
@@ -64,13 +67,19 @@ struct GameSetView: View {
         viewModel.cards.filter { !$0.onTheTable }
     }
     
-    
-    
     var deck: some View {
         ZStack {
             ForEach(undealtCards) { card in
                 CardView(card)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                    .offset(x: (undealtCards.suffix(2).contains(card) ? viewModel.offsetFor(card).x : 0),
+                            y: (undealtCards.suffix(2).contains(card) ? viewModel.offsetLastCards.y : 0))
+                
+                Text("\(undealtCards.count)")
+                    .foregroundStyle(.black)
+                    .offset(x: viewModel.offsetLastCards.x,
+                            y: viewModel.offsetLastCards.y)
+                
             }
         }
         .frame(width: discardPileWith, height: discardPileWith / cardAspectRatio)
