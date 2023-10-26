@@ -9,7 +9,6 @@ import Foundation
 
 struct GameSetModel<CardContent: Equatable> {
     private(set) var deck = [Card]()
-    private(set) var delay: TimeInterval = 0.0
     private(set) var deckNotOnTheTable = [Card]()
     
     private(set) var discardPile = [Card]() {
@@ -143,7 +142,6 @@ struct GameSetModel<CardContent: Equatable> {
             deck[index].onTheTable = true
             cardsAdded += 1
             
-            delay += 0.3
             if cardsAdded >= numberOfCards {
                 break
             }
@@ -178,7 +176,6 @@ struct GameSetModel<CardContent: Equatable> {
             .forEach { id in
                 if let index = deck.firstIndex(where: { $0.id == id }) {
                     replaceCard(at: index)
-                    delay += 0.3
                 }
             }
     }

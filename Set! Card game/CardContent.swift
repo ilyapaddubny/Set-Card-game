@@ -8,17 +8,6 @@
 import Foundation
 
 struct CardContent: Equatable, CustomStringConvertible  {
-    var description: String {
-        "color - \(colorName), opacity - \(opacity), shape - \(shape.description), items - \(numberOfItems)"
-    }
-    
-    static func == (lhs: CardContent, rhs: CardContent) -> Bool {
-        return lhs.colorName == rhs.colorName &&
-        lhs.opacity == rhs.opacity &&
-        lhs.shape == rhs.shape &&
-        lhs.numberOfItems == rhs.numberOfItems
-    }
-    
     let colorName: String
     let opacity: CGFloat
     let shape: ShapeType
@@ -29,6 +18,17 @@ struct CardContent: Equatable, CustomStringConvertible  {
         self.opacity = opacity
         self.shape = shape
         self.numberOfItems = numberOfItems
+    }
+    
+    static func == (lhs: CardContent, rhs: CardContent) -> Bool {
+        return lhs.colorName == rhs.colorName &&
+        lhs.opacity == rhs.opacity &&
+        lhs.shape == rhs.shape &&
+        lhs.numberOfItems == rhs.numberOfItems
+    }
+    
+    var description: String {
+        "color - \(colorName), opacity - \(opacity), shape - \(shape.description), items - \(numberOfItems)"
     }
     
     enum ShapeType: Equatable {

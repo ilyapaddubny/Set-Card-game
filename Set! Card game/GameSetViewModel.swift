@@ -11,10 +11,6 @@ import SwiftUI
 class GameSetViewModel: ObservableObject {
     typealias Card = GameSetModel<CardContent>.Card
     
-    func delay() -> TimeInterval {
-        return gameModel.delay
-    }
-    
     private static let contentArray: [Text] = Array(repeating: Text("1"), count: 81)
     private static var contentArrayShape = [CardContent]()
     
