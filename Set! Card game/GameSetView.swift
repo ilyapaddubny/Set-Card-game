@@ -13,8 +13,6 @@ struct GameSetView: View {
     @StateObject var viewModel = GameSetViewModel()
     private let discardPileWith = 50.0
     private let cardAspectRatio: CGFloat = 2/3
-   
-    
     
     @Namespace private var dealingNamespace
     @Namespace private var discardCards
@@ -39,6 +37,7 @@ struct GameSetView: View {
                 CardView(card)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
                     .matchedGeometryEffect(id: card.id, in: discardCards)
+                    .transition(.asymmetric(insertion: .identity, removal: .identity))
                     .overlay(FlyingText(isSet: card.isMatched && card.oneOfThreeSelected && card.onTheTable))
                     .shake(movement: (!card.isMatched && card.oneOfThreeSelected && card.onTheTable ? 1.0 : 0.0))
                     .zIndex(card.isMatched && card.oneOfThreeSelected && card.onTheTable || (!card.isMatched && card.oneOfThreeSelected && card.onTheTable) ? 1 : 0)
@@ -72,25 +71,22 @@ struct GameSetView: View {
             ForEach(undealtCards) { card in
                 CardView(card)
                     .matchedGeometryEffect(id: card.id, in: dealingNamespace)
-                    .offset(x: (undealtCards.suffix(2).contains(card) ? viewModel.offsetFor(card).x : 0),
-                            y: (undealtCards.suffix(2).contains(card) ? viewModel.offsetLastCards.y : 0))
-                
-                Text("\(undealtCards.count)")
-                    .foregroundStyle(.black)
-                    .offset(x: viewModel.offsetLastCards.x,
-                            y: viewModel.offsetLastCards.y)
-                
+                    .transition(.asymmetric(insertion: .identity, removal: .identity))
+                    .offset(x: (undealtCards.suffix(1).contains(card) ? 2 : 0),
+                            y: (undealtCards.suffix(1).contains(card) ? 1 : 0))
+                    .zIndex(undealtCards.suffix(1).contains(card) ? 0 : 1)
             }
+            Text("\(undealtCards.count)")
+                .foregroundStyle(.black)
+                .zIndex(1)
         }
         .frame(width: discardPileWith, height: discardPileWith / cardAspectRatio)
         .onTapGesture {
-            withAnimation(.easeInOut) {
                 if viewModel.setSelected() {
                     viewModel.replaceMachedCards()
                 } else {
                     viewModel.addThreeMoreCards()
                 }
-            }
             
         }
     }
