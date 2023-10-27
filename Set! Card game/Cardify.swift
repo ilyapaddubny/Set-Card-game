@@ -8,17 +8,31 @@
 import SwiftUI
 
 struct Cardify: ViewModifier {
-    let base = RoundedRectangle(cornerRadius: 12)
+    private let base = RoundedRectangle(cornerRadius: Constats.cornerRadius)
     let onTheTable: Bool
     let isChosen: Bool
     let isMatched: Bool
     let oneOfThreeSelected: Bool
-    private let cardAspectRatio: CGFloat = 2/3
-
+    
+    var rotation: Double // in degrees
+    
+    var animatableData: Double {
+        get { rotation }
+        set { rotation = newValue }
+    }
+    
+    init(onTheTable: Bool, isChosen: Bool, isMatched: Bool, oneOfThreeSelected: Bool) {
+        self.onTheTable = onTheTable
+        self.isChosen = isChosen
+        self.isMatched = isMatched
+        self.oneOfThreeSelected = oneOfThreeSelected
+        
+        rotation = onTheTable ? 0 : 180
+    }
     
     func body(content: Content) -> some View {
         ZStack(alignment: .center) {
-            if onTheTable {
+            if rotation < 90 {
                 base
                     .stroke(lineWidth: isChosen ? 5 : 1)
                     .foregroundColor(isChosen ? .blue : .gray)
@@ -36,7 +50,7 @@ struct Cardify: ViewModifier {
                 content
                     .padding()
                     .minimumScaleFactor(0.1)
-                    .aspectRatio(cardAspectRatio, contentMode: .fill)
+                    .aspectRatio(Constats.cardAspectRatio, contentMode: .fill)
             } else {
                 base
                     .stroke(lineWidth: isChosen ? 5 : 1)
@@ -45,6 +59,12 @@ struct Cardify: ViewModifier {
                     .fill(Color.mint)
             }
         }
+        .rotation3DEffect(Angle.degrees(rotation), axis: (0, 1, 0))
+    }
+    
+    private struct Constats {
+        static let cardAspectRatio: CGFloat = 2/3
+        static let cornerRadius: CGFloat = 12
     }
 }
 

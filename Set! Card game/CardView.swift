@@ -11,16 +11,19 @@ struct CardView: View {
     typealias Card = GameSetModel<CardContent>.Card
     let card: Card
     private var cardIsBlank = false
+    let oneOfThreeSelected: Bool
     
     //returns a cardView
-    init(_ card: Card) {
+    init(_ card: Card, oneOfThreeSelected: Bool) {
         self.card = card
+        self.oneOfThreeSelected = oneOfThreeSelected
     }
     
     //returns a blank cardView
     init() {
         self.cardIsBlank = true
         self.card = Card(content: CardContent(colorName: "", opacity: 0, shape: .circle, numberOfItems: 1))
+        oneOfThreeSelected = false
     }
     
     var body: some View {
@@ -36,7 +39,7 @@ struct CardView: View {
             .cardify(onTheTable: card.onTheTable,
                      isChosen: card.isChosen,
                      isMatched: card.isChosen,
-                     oneOfThreeSelected: card.oneOfThreeSelected)
+                     oneOfThreeSelected: oneOfThreeSelected)
     }
     
     @ViewBuilder

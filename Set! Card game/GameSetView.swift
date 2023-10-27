@@ -10,15 +10,24 @@ import SwiftUI
 struct GameSetView: View {
     typealias Card = GameSetModel<CardContent>.Card
     
-    @StateObject var viewModel = GameSetViewModel()
-    private let discardPileWith = 50.0
-    private let cardAspectRatio: CGFloat = 2/3
+    private var discardedCards: [Card] {
+        viewModel.cards.filter { !$0.onTheTable && $0.isMatched}
+    }
+    
+    private var undealtCards: [Card] {
+        viewModel.cards.filter { !$0.onTheTable && !$0.isMatched}
+    }
+    
+    private var dealtCards: [Card] {
+        viewModel.cards.filter { $0.onTheTable}
+    }
     
     @Namespace private var dealingNamespace
     @Namespace private var discardCards
     
+    @StateObject var viewModel: GameSetViewModel
+    
     var body: some View {
-       
         VStack {
             Text("Set").font(.title)
             cards
@@ -27,28 +36,6 @@ struct GameSetView: View {
         }
         .padding()
     }
-    
-    @State var missAtimation = 1
-    //    set of cards
-    @ViewBuilder
-    private var cards: some View {
-        AspectVGrid(viewModel.cards.filter({$0.onTheTable}), aspectRatio: cardAspectRatio) { card in
-            if card.onTheTable {
-                CardView(card)
-                    .matchedGeometryEffect(id: card.id, in: dealingNamespace)
-                    .matchedGeometryEffect(id: card.id, in: discardCards)
-                    .transition(.asymmetric(insertion: .identity, removal: .identity))
-                    .overlay(FlyingText(isSet: card.isMatched && card.oneOfThreeSelected && card.onTheTable))
-                    .shake(movement: (!card.isMatched && card.oneOfThreeSelected && card.onTheTable ? 1.0 : 0.0))
-                    .zIndex(card.isMatched && card.oneOfThreeSelected && card.onTheTable || (!card.isMatched && card.oneOfThreeSelected && card.onTheTable) ? 1 : 0)
-                    .padding(4)
-                    .onTapGesture {
-                        viewModel.choose(card)
-                    }
-            }
-        }
-    }
-    
     
     var buttonsSection: some View {
         HStack {
@@ -62,32 +49,50 @@ struct GameSetView: View {
         }.padding()
     }
     
-    private var undealtCards: [Card] {
-        viewModel.cards.filter { !$0.onTheTable }
+    @ViewBuilder
+    private var cards: some View {
+        AspectVGrid(dealtCards, aspectRatio: Constants.cardAspectRatio) { card in
+            CardView(card, oneOfThreeSelected: viewModel.threeCardsSelected)
+                .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                .matchedGeometryEffect(id: card.id, in: discardCards)
+                .overlay(FlyingText(isSet: card.isMatched && viewModel.threeCardsSelected && card.onTheTable))
+                .shake(movement: (!card.isMatched && viewModel.threeCardsSelected && card.onTheTable ? 1.0 : 0.0))
+                .zIndex(card.isMatched && viewModel.threeCardsSelected && card.onTheTable || (!card.isMatched && viewModel.threeCardsSelected && card.onTheTable) ? 1 : 0)
+                .padding(4)
+                .onTapGesture {
+                    withAnimation {
+                        viewModel.choose(card)
+                    }
+                }
+        }
     }
+    
     
     var deck: some View {
         ZStack {
             ForEach(undealtCards) { card in
-                CardView(card)
-                    .matchedGeometryEffect(id: card.id, in: dealingNamespace)
-                    .transition(.asymmetric(insertion: .identity, removal: .identity))
-                    .offset(x: (undealtCards.suffix(1).contains(card) ? 2 : 0),
-                            y: (undealtCards.suffix(1).contains(card) ? 1 : 0))
-                    .zIndex(undealtCards.suffix(1).contains(card) ? 0 : 1)
+                withAnimation {
+                    CardView(card, oneOfThreeSelected: false)
+                        .matchedGeometryEffect(id: card.id, in: dealingNamespace)
+                        .offset(x: (undealtCards.suffix(1).contains(card) ? 2 : 0),
+                                y: (undealtCards.suffix(1).contains(card) ? 1 : 0))
+                        .zIndex(undealtCards.suffix(1).contains(card) ? 0 : 1)
+                }
             }
             Text("\(undealtCards.count)")
                 .foregroundStyle(.black)
                 .zIndex(1)
         }
-        .frame(width: discardPileWith, height: discardPileWith / cardAspectRatio)
+        .frame(width: Constants.discardPileWith, height: Constants.discardPileWith / Constants.cardAspectRatio)
         .onTapGesture {
+            if !undealtCards.isEmpty {
                 if viewModel.setSelected() {
+                    //                    TODO: add replacement at the exact place on the table
                     viewModel.replaceMachedCards()
                 } else {
                     viewModel.addThreeMoreCards()
                 }
-            
+            }
         }
     }
     
@@ -122,27 +127,24 @@ struct GameSetView: View {
         }
     }
     
-    
-    
     var discardPile: some View {
         ZStack {
             CardView()
-            ForEach(viewModel.discardPile) { card in
-                CardView(card)
+            ForEach(discardedCards) { card in
+                CardView(card, oneOfThreeSelected: false)
                     .matchedGeometryEffect(id: card.id, in: discardCards)
             }
-        }.frame(width: discardPileWith, height: discardPileWith / cardAspectRatio)
+        }.frame(width: Constants.discardPileWith, height: Constants.discardPileWith / Constants.cardAspectRatio)
+    }
+    
+    private struct Constants {
+        static let discardPileWith = 50.0
+        static let cardAspectRatio: CGFloat = 2/3
+       
     }
     
 }
 
 #Preview {
-    GameSetView()
-}
-
-extension View {
-    func shake(movement: CGFloat) -> some View {
-        self.modifier(Shake(movement:movement))
-    }
-    
+    GameSetView(viewModel: GameSetViewModel())
 }

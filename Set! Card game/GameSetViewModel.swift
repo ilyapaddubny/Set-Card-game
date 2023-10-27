@@ -54,17 +54,17 @@ class GameSetViewModel: ObservableObject {
         gameModel.deck
     }
     
-    var discardPile: [Card] {
-        gameModel.discardPile
-    }
-    
     func setSelected() -> Bool {gameModel.ifSetSelected()}
+    var threeCardsSelected: Bool {
+        cards.filter{ $0.onTheTable && $0.isChosen}.count == 3
+    }
     
     
     // MARK: - Intents
     
     func choose(_ card: Card) -> Void {
         gameModel.choose(card) {cards in
+            //Set logic
             let opacityCheck = (cards[0].content.opacity == cards[1].content.opacity && cards[1].content.opacity == cards[2].content.opacity) ||
             (cards[0].content.opacity != cards[1].content.opacity && cards[1].content.opacity != cards[2].content.opacity  && cards[0].content.opacity != cards[2].content.opacity)
             
@@ -81,7 +81,7 @@ class GameSetViewModel: ObservableObject {
     
     func missAtimation(card: Card, value: Int) -> Int {
         var valueNew = value
-        if(!card.isMatched && card.oneOfThreeSelected && card.onTheTable) {
+        if(!card.isMatched && threeCardsSelected && card.onTheTable) {
             valueNew += 1
             return valueNew
         }
