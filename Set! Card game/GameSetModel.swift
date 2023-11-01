@@ -9,7 +9,6 @@ import Foundation
 
 struct GameSetModel<CardContent: Equatable> {
     private(set) var deck = [Card]()
-    private(set) var deckNotOnTheTable = [Card]()
     
     init(numberOfCards: Int, cardContentFactory: (Int) -> CardContent) {
         for index in 0..<numberOfCards {
@@ -17,35 +16,23 @@ struct GameSetModel<CardContent: Equatable> {
             deck.append(Card(content: content))
         }
         deck.shuffle()
-        addNumberOfCardsToTheTable(12)
     }
     
-    
-    private var setSelected: Bool {
-        deck.filter{$0.isMatched && $0.onTheTable}.count == 3
-    }
     var chosenExactlyThreeCards: Bool {
-        get { deck.filter{$0.isChosen && $0.onTheTable}.count == 3 }
+        get { deck.filter{$0.isChosen}.count == 3 }
         set {}
     }
     
     mutating func choose(_ card: GameSetModel<CardContent>.Card, setLogic: (_ cards: [Card]) -> Bool) -> Void {
         if let index = deck.firstIndex(where: {$0.id == card.id}) {
             if chosenExactlyThreeCards {
-                if checkTheSet(withLogic: setLogic) {
-                   //set already on the table
-                    discardCards()
-                    if !deck[index].isChosen {
-                        deck[index].isChosen.toggle()
-                    }
-                    
-                } else {
-                    unselectAllCards()
-                    deck[index].isChosen.toggle()
-                }
+                unselectAllCards()
+                deck[index].isChosen.toggle()
             } else {
                 //user selected 1st, 2nd or 3rd card
-                deck[index].isChosen.toggle()
+                if !deck[index].isMatched {
+                    deck[index].isChosen.toggle()
+                }
                 if chosenExactlyThreeCards {
                     //user selected 3rd
                     if checkTheSet(withLogic: setLogic) {
@@ -57,7 +44,7 @@ struct GameSetModel<CardContent: Equatable> {
     }
     
     mutating func markCardsFromSet() {
-        deck.compactMap {$0.isChosen && $0.onTheTable ? $0.id : nil}
+        deck.compactMap {$0.isChosen && $0.isFacedUp && !$0.isMatched ? $0.id : nil}
             .forEach {id in
                 if let index = deck.firstIndex(where: { $0.id == id }) {
                     deck[index].isMatched = true
@@ -65,24 +52,13 @@ struct GameSetModel<CardContent: Equatable> {
             }
     }
     
-    mutating func discardCards() {
-        deck.compactMap {$0.isChosen && $0.onTheTable && $0.isMatched ? $0.id : nil}
-            .forEach {id in
-                if let index = deck.firstIndex(where: { $0.id == id }) {
-                    deck[index].onTheTable = false
-                    deck[index].isChosen = false
-                }
-            }
-    }
-    
     mutating func newGame() {
         for index in deck.indices {
             deck[index].isChosen = false
-            deck[index].onTheTable = false
             deck[index].isMatched = false
+            deck[index].isFacedUp = false
         }
         deck.shuffle()
-        addNumberOfCardsToTheTable(12)
     }
     
     mutating func checkTheSet(withLogic logic: (_ cards: [Card]) -> Bool) -> Bool {
@@ -105,84 +81,108 @@ struct GameSetModel<CardContent: Equatable> {
             }
     }
     
-    mutating func addNumberOfCardsToTheTable(_ numberOfCards: Int) {
-        var cardsAdded = 0
-        for index in deck.indices where !deck[index].onTheTable && !deck[index].isMatched {
-            deck[index].onTheTable = true
-            cardsAdded += 1
-            if cardsAdded >= numberOfCards {
-                break
+    private var selectedCardsIndices: [Int] {
+        get { deck.indices.filter({deck[$0].isChosen}) }
+    }
+    
+    mutating func drawNamberOfCards(_ numberOfCards: Int) {
+        if numberOfCards > deck.filter({!$0.isFacedUp && $0.isMatched != true}).count {
+            return
+        }
+        
+        if selectedCardsIndices.count > 0 {
+            //TODO: fixe the potintial error
+            if deck[selectedCardsIndices[0]].isMatched == true {
+                swapMatchedWithNewCard(selectedCardsIndices[0])
+                return
             }
+            if deck[selectedCardsIndices[1]].isMatched == true {
+                swapMatchedWithNewCard(selectedCardsIndices[1])
+                return
+            }
+            if deck[selectedCardsIndices[2]].isMatched == true {
+                swapMatchedWithNewCard(selectedCardsIndices[2])
+                return
+            }
+        }
+        
+        for _ in 0..<numberOfCards {
+            guard let index = deck.firstIndex(where: {!$0.isFacedUp}) else { return }
+            deck[index].isFacedUp = true
         }
     }
     
-    
-    mutating func removeMachedCards() {
-        deck.compactMap { $0.isMatched ? $0.id : nil }
-            .forEach { id in
-                if let index = deck.firstIndex(where: { $0.id == id }) {
-                    removeCard(at: index)
-                }
-            }
-    }
-    
-    private mutating func removeCard(at index: Int) {
-//        discardPile.append(deck[index])
-        deck[index].onTheTable = false
-//        deck.remove(at: index)
-//        TODO: change .remove logic
-    }
-    
-    mutating func shuffle() {
-        deck = deck.filter { $0.onTheTable }.shuffled() + deck.filter { !$0.onTheTable }
-    }
-    
-    func ifSetSelected() -> Bool {setSelected}
-    
-    
-     // Code was depricated since the logic has changed
-    mutating func replaceMachedCards() {
-        deck.compactMap { $0.isMatched && $0.onTheTable ? $0.id : nil }
-            .forEach { id in
-                if let index = deck.firstIndex(where: { $0.id == id }) {
-                    deck[index].onTheTable = false
-                    dealCardFromDeck()
-                }
-            }
-    }
-    
-    private mutating func dealCardFromDeck() {
-        if let newCardFromDeckIndex = deck.firstIndex(where: {!$0.onTheTable && !$0.isMatched}) {
-            deck[newCardFromDeckIndex].onTheTable = true
+    private mutating func swapMatchedWithNewCard(_ matchedCardIndex: Int) {
+        deck[matchedCardIndex].isChosen = false
+        if let index = deck.firstIndex(where: {!$0.isFacedUp && !$0.isMatched}) {
+            deck[index].isFacedUp = true
+            deck.swapAt(index, matchedCardIndex)
+        } else {
+            return
         }
     }
-
     
     struct Card: Identifiable, Equatable, CustomStringConvertible {
         static func == (lhs: GameSetModel<CardContent>.Card, rhs: GameSetModel<CardContent>.Card) -> Bool {
             return lhs.content == rhs.content && 
             lhs.id == rhs.id &&
             lhs.isMatched == rhs.isMatched &&
-            lhs.isChosen == rhs.isChosen &&
-            lhs.onTheTable == rhs.onTheTable
+            lhs.isChosen == rhs.isChosen
         }
         
         let content: CardContent
         
         var id = UUID()
-        
-        var isMatched = false
-        var isChosen = false
-        var onTheTable = false {
+        var isMatched = false {
             didSet {
-                if oldValue == true {
-                    self.isChosen = false
-                }
+                print ("✅ isMatched didSet \(oldValue)")
             }
         }
-    
+        var isChosen = false
+        var isFacedUp = false{
+            didSet {
+                print ("✅ isFacedUp didSet \(oldValue)")
+            }
+        }
+        
         var description: String {
-            "Card id: \(id): \(isMatched ? "Matched" : "") \(isChosen ? "Chosen" : "") \(onTheTable ? "On the table" : "") \(content)."
+            "Card id: \(id): \(isMatched ? "Matched" : "") \(isChosen ? "Chosen" : "") \(content)."
         }
     }
+    
+    
+    
+    
+    
+    //    mutating func addNumberOfCardsToTheTable(_ numberOfCards: Int) {
+    //        var cardsAdded = 0
+    //        for index in deck.indices where !deck[index].isFacedUp {
+    //            deck[index].isFacedUp = true
+    //            cardsAdded += 1
+    //            if cardsAdded >= numberOfCards {
+    //                break
+    //            }
+    //        }
+    //    }
+        
+    //    mutating func shuffle() {
+    //        deck = deck.filter { $0.isFacedUp && !$0.isMatched }.shuffled() + deck.filter { !$0.isFacedUp }
+    //    }
+        
+        
+    //    mutating func setCardToFacedUp(_ card: Card) {
+    //        deck.indices.forEach { id in
+    //            if let index = deck.firstIndex(where: { $0.id == card.id }) {
+    //                deck[index].isFacedUp = true
+    //            }
+    //        }
+    //    }
+        
+    //    mutating func deselect(_ card: Card) {
+    //        deck.indices.forEach { id in
+    //            if let index = deck.firstIndex(where: { $0.id == card.id }) {
+    //                    deck[index].isChosen = false
+    //                }
+    //            }
+    //    }
 }

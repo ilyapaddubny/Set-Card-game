@@ -48,15 +48,30 @@ class GameSetViewModel: ObservableObject {
         
     }
     
-    @Published var gameModel = createGame()
+    @Published private var gameModel = createGame()
     
     var cards: [Card] {
         gameModel.deck
     }
     
-    func setSelected() -> Bool {gameModel.ifSetSelected()}
     var threeCardsSelected: Bool {
-        cards.filter{ $0.onTheTable && $0.isChosen}.count == 3
+        cards.filter{$0.isChosen}.count == 3
+    }
+    
+//    func setCardToFacedUp(_ card: Card) {
+//        gameModel.setCardToFacedUp(card)
+//    }
+    
+//     func deselect(_ card: Card) {
+//        gameModel.deselect(card)
+//    }
+    
+    var faceUpCards: [Card] {
+        return gameModel.deck.filter({$0.isFacedUp})
+    }
+    
+     func drawCard() {
+         gameModel.drawNamberOfCards(1)
     }
     
     
@@ -79,25 +94,10 @@ class GameSetViewModel: ObservableObject {
         
     }
     
-    func missAtimation(card: Card, value: Int) -> Int {
-        var valueNew = value
-        if(!card.isMatched && threeCardsSelected && card.onTheTable) {
-            valueNew += 1
-            return valueNew
-        }
-        return value
-   }
     
-    func shuffle() -> Void {gameModel.shuffle()}
-    func addThreeMoreCards() -> Void {gameModel.addNumberOfCardsToTheTable(3)}
-    
-    func removeMachedCards() {gameModel.removeMachedCards()}
-    func replaceMachedCards() {gameModel.replaceMachedCards()}
-    
-    
+//    func shuffle() -> Void {gameModel.shuffle()}
     
     func newGame() {gameModel.newGame()}
-    
 }
 
 enum OneOfThree: CaseIterable {

@@ -7,59 +7,60 @@
 
 import SwiftUI
 
-struct Cardify: ViewModifier {
+struct Cardify: ViewModifier, Animatable {
+    typealias Card = GameSetModel<CardContent>.Card
+    var card: Card
     private let base = RoundedRectangle(cornerRadius: Constats.cornerRadius)
-    let onTheTable: Bool
-    let isChosen: Bool
-    let isMatched: Bool
-    let oneOfThreeSelected: Bool
     
-    var rotation: Double // in degrees
+    var isFacedUp: Bool {
+        rotation < 90.0
+       }
+    
+    let threeCardsAreSelected: Bool
+    var rotation: Double
     
     var animatableData: Double {
         get { rotation }
-        set { rotation = newValue }
+        set { 
+            print ("😀 \(newValue)")
+            rotation = newValue }
     }
     
-    init(onTheTable: Bool, isChosen: Bool, isMatched: Bool, oneOfThreeSelected: Bool) {
-        self.onTheTable = onTheTable
-        self.isChosen = isChosen
-        self.isMatched = isMatched
-        self.oneOfThreeSelected = oneOfThreeSelected
-        
-        rotation = onTheTable ? 0 : 180
+    init(threeCardsAreSelected: Bool, card: Card) {
+        self.threeCardsAreSelected = threeCardsAreSelected
+        self.card = card
+        rotation = card.isFacedUp ? 0.0 : 180.0
     }
     
     func body(content: Content) -> some View {
-        ZStack(alignment: .center) {
-            if rotation < 90 {
+        ZStack {
                 base
-                    .stroke(lineWidth: isChosen ? 5 : 1)
-                    .foregroundColor(isChosen ? .blue : .gray)
+                    .strokeBorder(lineWidth: card.isChosen ? 3 : 1)
+                    .foregroundStyle(card.isChosen ? .blue : .gray)
+                    .overlay {
+                        content
+                            .padding()
+                            .minimumScaleFactor(0.1)
+                            .aspectRatio(Constats.cardAspectRatio, contentMode: .fill)
+                    }
+                    .background {
+                        ZStack {
+                            base.fill(.white)
+                        }
+                        if threeCardsAreSelected && card.isChosen {
+                            base
+                                .fill(card.isMatched ? .green : .red)
+                                .opacity(0.4)
+                        }
+                    }
+                    .opacity(isFacedUp ? 1 : 0)
                 base
-                    .fill(.white)
-                if (isMatched) {
-                    base
-                        .fill(.green
-                            .opacity(oneOfThreeSelected ? 0.4 : 0))
-                } else {
-                    base
-                        .fill(.red
-                            .opacity(oneOfThreeSelected ? 0.4 : 0))
-                }
-                content
-                    .padding()
-                    .minimumScaleFactor(0.1)
-                    .aspectRatio(Constats.cardAspectRatio, contentMode: .fill)
-            } else {
-                base
-                    .stroke(lineWidth: isChosen ? 5 : 1)
-                    .foregroundColor(isChosen ? .blue : .gray)
-                base
-                    .fill(Color.mint)
-            }
+                    .stroke(lineWidth: card.isChosen ? 3 : 1)
+                    .foregroundColor(card.isChosen ? .blue : .gray)
+                    .background(base.fill(Color.mint))
+                    .opacity(isFacedUp ? 0 : 1)
         }
-        .rotation3DEffect(Angle.degrees(rotation), axis: (0, 1, 0))
+        .rotation3DEffect(.degrees(rotation), axis: (0, 1, 0))
     }
     
     private struct Constats {
@@ -69,8 +70,8 @@ struct Cardify: ViewModifier {
 }
 
 extension View {
-    func cardify(onTheTable: Bool, isChosen: Bool, isMatched: Bool, oneOfThreeSelected: Bool) -> some View {
-        self.modifier(Cardify(onTheTable: onTheTable, isChosen: isChosen, isMatched: isMatched, oneOfThreeSelected: oneOfThreeSelected))
+    func cardify(threeCardsAreSelected: Bool, card: GameSetModel<CardContent>.Card) -> some View {
+        self.modifier(Cardify(threeCardsAreSelected: threeCardsAreSelected, card: card))
     }
 }
 

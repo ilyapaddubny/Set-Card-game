@@ -16,7 +16,6 @@ struct ShapeView: View {
     
     var body: some View {
         GeometryReader { geometry in
-            
         VStack(alignment: .center, spacing: 0) {
             ForEach(0..<card.content.numberOfItems, id: \.self) {index in
                 shape(size: geometry.size, index: index)
@@ -36,11 +35,11 @@ struct ShapeView: View {
                 Circle()
                     .stroke(lineWidth: card.content.opacity == OneOfThree.one.opacity ?  3 : 1)
                     .foregroundColor(card.content.opacity == OneOfThree.one.opacity ? card.content.color : .black)
-                    .frame(height: size.height/3-contentPadding)
+                    .frame(height: max(size.height/3-contentPadding, 0))
                 Circle()
                     .foregroundColor(card.content.color)
                     .opacity(card.content.opacity)
-                    .frame(height: size.height/3-contentPadding)
+                    .frame(height: max(size.height/3-contentPadding, 0))
             }
             
         case .diamond:
@@ -48,13 +47,13 @@ struct ShapeView: View {
                 DiamondShape()
                     .stroke(lineWidth: card.content.opacity == OneOfThree.one.opacity ?  3 : 1)
                     .foregroundColor(card.content.opacity == OneOfThree.one.opacity ? card.content.color : .black)
-                    .frame(height: size.height/3-contentPadding)
+                    .frame(height: max(size.height/3-contentPadding, 0))
                     .aspectRatio(shapeAspectRatio, contentMode: .fit)
                 
                 DiamondShape()
                     .foregroundColor(card.content.color)
                     .opacity(card.content.opacity)
-                    .frame(height: size.height/3-contentPadding)
+                    .frame(height: max(size.height/3-contentPadding, 0))
                     .aspectRatio(shapeAspectRatio, contentMode: .fit)
             }
             
@@ -63,13 +62,13 @@ struct ShapeView: View {
                 WavedShape()
                     .stroke(lineWidth: card.content.opacity == OneOfThree.one.opacity ?  3 : 1)
                     .foregroundColor(card.content.opacity == OneOfThree.one.opacity ? card.content.color : .black)
-                    .frame(height: size.height/3-contentPadding)
+                    .frame(height: max(size.height/3-contentPadding, 0))
                     .aspectRatio(shapeAspectRatio, contentMode: .fit)
                 
                 WavedShape()
                     .foregroundColor(card.content.color)
                     .opacity(card.content.opacity)
-                    .frame(height: size.height/3-contentPadding)
+                    .frame(height: max(size.height/3-contentPadding, 0))
                     .aspectRatio(shapeAspectRatio, contentMode: .fit)
                 
             }
