@@ -16,6 +16,9 @@ struct GameSetModel<CardContent: Equatable> {
             deck.append(Card(content: content))
         }
         deck.shuffle()
+        
+        //test
+        createTest(content: cardContentFactory(1))
     }
     
     var chosenExactlyThreeCards: Bool {
@@ -79,6 +82,18 @@ struct GameSetModel<CardContent: Equatable> {
                     deck[index].isChosen = false
                 }
             }
+    }
+    
+    private(set) var testCards = [GameSetModel<CardContent>.Card]()
+    
+    mutating func createTest(content: CardContent) {
+        let testCard = Card(content: content)
+        testCards.append(testCard)
+    }
+    
+    mutating func test() {
+        testCards[0].isFacedUp.toggle()
+        testCards[0].isChosen.toggle()
     }
     
     private var selectedCardsIndices: [Int] {
@@ -170,13 +185,13 @@ struct GameSetModel<CardContent: Equatable> {
     //    }
         
         
-    //    mutating func setCardToFacedUp(_ card: Card) {
-    //        deck.indices.forEach { id in
-    //            if let index = deck.firstIndex(where: { $0.id == card.id }) {
-    //                deck[index].isFacedUp = true
-    //            }
-    //        }
-    //    }
+        mutating func setCardToFacedUp(_ card: Card) {
+            deck.indices.forEach { id in
+                if let index = deck.firstIndex(where: { $0.id == card.id }) {
+                    deck[index].isFacedUp = true
+                }
+            }
+        }
         
     //    mutating func deselect(_ card: Card) {
     //        deck.indices.forEach { id in

@@ -11,6 +11,7 @@ struct GameSetView: View {
     typealias Card = GameSetModel<CardContent>.Card
     
     @Namespace private var dealingNamespace
+   
     
     @StateObject var viewModel: GameSetViewModel
     
@@ -27,9 +28,11 @@ struct GameSetView: View {
         HStack {
             discardPile
             Spacer()
+            testLeft
+            Spacer()
             newGameButton
-//            Spacer()
-//            shaffleButton
+            Spacer()
+            testRight
             Spacer()
             deck
         }.padding()
@@ -63,6 +66,8 @@ struct GameSetView: View {
     
     @State private var dealtCards = Set<Card.ID>()
     
+    
+    
     private func isDealt(_ card: Card) -> Bool {
         dealtCards.contains(card.id)
     }
@@ -82,7 +87,7 @@ struct GameSetView: View {
     
     private func flipAnimation(order: Int) -> Animation {
         let delay = Double(order) * Constants.delayDuration
-        return Animation.easeInOut.delay(delay)
+        return Animation.easeInOut(duration: 1).delay(delay)
     }
     
     
@@ -116,9 +121,9 @@ struct GameSetView: View {
                         .zIndex(undealtCards.suffix(1).contains(card) ? 0 : 1)
                 }
             }
-            Text("\(viewModel.cards.filter({!isDealt($0)}).count)")
-                .foregroundStyle(.black)
-                .zIndex(1)
+//            Text("\(viewModel.cards.filter({!isDealt($0)}).count)")
+//                .foregroundStyle(.black)
+//                .zIndex(1)
         }
         .frame(width: Constants.discardPileWith, height: Constants.discardPileWith / Constants.cardAspectRatio)
         .onTapGesture {
@@ -254,6 +259,68 @@ struct GameSetView: View {
                 .font(.largeTitle)
         }
     }
+    
+    //MARK: - test
+    var testLeft: some View {
+        
+        ZStack {
+            //!!! Она уже есть
+            ForEach(viewModel.card.filter( {$0.isFacedUp} )) { card in
+                view(for: card)
+                    .onTapGesture {
+                        withAnimation(flipAnimation(order: 5)) {
+                            viewModel.test()
+                            dealtCards.insert(card.id)
+                        }
+                        
+                    }
+            }
+                
+            }
+        .frame(width: Constants.discardPileWith, height: Constants.discardPileWith / Constants.cardAspectRatio)
+//        .background(.blue)
+    }
+    
+    
+    
+    private var undealtCardsTest: [Card] {
+            viewModel.card.filter { !isDealtTest($0) }
+        }
+    
+    private func isDealtTest(_ card: Card) -> Bool {
+        dealtCardsTest.contains(card.id)
+    }
+    
+    @State private var dealtCardsTest = Set<Card.ID>()
+    
+    var testRight: some View {
+        //ITS CREATING
+        
+        ZStack {
+            ForEach(undealtCardsTest) { card in
+                view(for: card)
+                    .onTapGesture {
+                        withAnimation(flipAnimation(order: 5)) {
+                            viewModel.test()
+                            dealtCards.removeAll()
+                        }
+                        
+                    }
+            }
+            
+            }
+        .frame(width: Constants.discardPileWith, height: Constants.discardPileWith / Constants.cardAspectRatio)
+//        .background(.blue)
+    }
+    
+    private func view(for card: Card) -> some View {
+           CardView(card, threeCardsAreSelected: viewModel.threeCardsSelected)
+               .matchedGeometryEffect(id: card.id, in: test)
+               .transition(.asymmetric(insertion: .identity, removal: .identity))
+       }
+    
+    @Namespace private var test
+    @Namespace private var test2
     
     private struct Constants {
         static let discardPileWith = 50.0

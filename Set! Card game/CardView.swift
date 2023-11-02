@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CardView: View {
-    let card: Card
+    var card: Card
     private var cardIsBlank = false
     let threeCardsAreSelected: Bool
     
@@ -18,9 +18,17 @@ struct CardView: View {
     }
     
     var body: some View {
-        ShapeView(card: card)
-            .cardify(threeCardsAreSelected: threeCardsAreSelected,
-                     card: card)
+        //TODO: concider the discard pile
+        if card.isFacedUp || !card.isMatched {
+            ShapeView(card: card)
+                .cardify(threeCardsAreSelected: threeCardsAreSelected,
+                         card: card)
+    //            .transition(.asymmetric(insertion: .identity, removal: .identity))
+                .transition(.scale)
+        } else {
+            Color.clear
+        }
+        
     }
     
     typealias Card = GameSetModel<CardContent>.Card

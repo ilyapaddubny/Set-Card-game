@@ -50,6 +50,14 @@ class GameSetViewModel: ObservableObject {
     
     @Published private var gameModel = createGame()
     
+    var card: [Card] {
+        gameModel.testCards
+    }
+    
+    func test() {
+        gameModel.test()
+    }
+    
     var cards: [Card] {
         gameModel.deck
     }
@@ -58,9 +66,9 @@ class GameSetViewModel: ObservableObject {
         cards.filter{$0.isChosen}.count == 3
     }
     
-//    func setCardToFacedUp(_ card: Card) {
-//        gameModel.setCardToFacedUp(card)
-//    }
+    func setCardToFacedUp(_ card: Card) {
+        gameModel.setCardToFacedUp(card)
+    }
     
 //     func deselect(_ card: Card) {
 //        gameModel.deselect(card)
@@ -75,22 +83,27 @@ class GameSetViewModel: ObservableObject {
     }
     
     
+    
+    
     // MARK: - Intents
     
     func choose(_ card: Card) -> Void {
-        gameModel.choose(card) {cards in
-            //Set logic
-            let opacityCheck = (cards[0].content.opacity == cards[1].content.opacity && cards[1].content.opacity == cards[2].content.opacity) ||
-            (cards[0].content.opacity != cards[1].content.opacity && cards[1].content.opacity != cards[2].content.opacity  && cards[0].content.opacity != cards[2].content.opacity)
-            
-            let numberOfItemsCheck = (cards[0].content.numberOfItems == cards[1].content.numberOfItems && cards[1].content.numberOfItems == cards[2].content.numberOfItems) ||  (cards[0].content.numberOfItems != cards[1].content.numberOfItems && cards[1].content.numberOfItems != cards[2].content.numberOfItems  && cards[0].content.numberOfItems != cards[2].content.numberOfItems)
-            
-            let shapeCheck = (cards[0].content.shape == cards[1].content.shape && cards[1].content.shape == cards[2].content.shape) || (cards[0].content.shape != cards[1].content.shape && cards[1].content.shape != cards[2].content.shape  && cards[0].content.shape != cards[2].content.shape)
-            
-            let colorCheck = (cards[0].content.colorName == cards[1].content.colorName && cards[1].content.colorName == cards[2].content.colorName) || (cards[0].content.colorName != cards[1].content.colorName && cards[1].content.colorName != cards[2].content.colorName  && cards[0].content.colorName != cards[2].content.colorName)
-            
-            return opacityCheck && numberOfItemsCheck && shapeCheck && colorCheck
+        withAnimation {
+            gameModel.choose(card) {cards in
+                //Set logic
+                let opacityCheck = (cards[0].content.opacity == cards[1].content.opacity && cards[1].content.opacity == cards[2].content.opacity) ||
+                (cards[0].content.opacity != cards[1].content.opacity && cards[1].content.opacity != cards[2].content.opacity  && cards[0].content.opacity != cards[2].content.opacity)
+                
+                let numberOfItemsCheck = (cards[0].content.numberOfItems == cards[1].content.numberOfItems && cards[1].content.numberOfItems == cards[2].content.numberOfItems) ||  (cards[0].content.numberOfItems != cards[1].content.numberOfItems && cards[1].content.numberOfItems != cards[2].content.numberOfItems  && cards[0].content.numberOfItems != cards[2].content.numberOfItems)
+                
+                let shapeCheck = (cards[0].content.shape == cards[1].content.shape && cards[1].content.shape == cards[2].content.shape) || (cards[0].content.shape != cards[1].content.shape && cards[1].content.shape != cards[2].content.shape  && cards[0].content.shape != cards[2].content.shape)
+                
+                let colorCheck = (cards[0].content.colorName == cards[1].content.colorName && cards[1].content.colorName == cards[2].content.colorName) || (cards[0].content.colorName != cards[1].content.colorName && cards[1].content.colorName != cards[2].content.colorName  && cards[0].content.colorName != cards[2].content.colorName)
+                
+                return opacityCheck && numberOfItemsCheck && shapeCheck && colorCheck
+            }
         }
+        
         
     }
     

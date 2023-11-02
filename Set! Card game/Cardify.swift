@@ -59,6 +59,7 @@ struct Cardify: ViewModifier, Animatable {
                     .foregroundColor(card.isChosen ? .blue : .gray)
                     .background(base.fill(Color.mint))
                     .opacity(isFacedUp ? 0 : 1)
+                    .transition(.asymmetric(insertion: .identity, removal: .identity))
         }
         .rotation3DEffect(.degrees(rotation), axis: (0, 1, 0))
     }
