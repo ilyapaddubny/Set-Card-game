@@ -22,10 +22,8 @@ struct AspectVGrid<Item: Identifiable, ItemView: View>: View {
     
     var body: some View {
         GeometryReader { geometry in
-            let gridItemSize = gridItemWidthThatFits(count: items.count,
-                                                     size: geometry.size)
-            
-                ScrollView() {
+            let gridItemSize = gridItemWidthThatFits(count: items.count, size: geometry.size)
+                ScrollView {
                     LazyVGrid(columns: [GridItem(.adaptive(minimum: min(gridItemSize, 80)), spacing: 0)], spacing: 0) {
                         ForEach(items) { item in
                             content(item)

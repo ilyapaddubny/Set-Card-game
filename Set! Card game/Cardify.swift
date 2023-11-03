@@ -54,15 +54,16 @@ struct Cardify: ViewModifier, Animatable {
                         }
                     }
                     .opacity(isFacedUp ? 1 : 0)
+
                 base
                     .stroke(lineWidth: card.isChosen ? 3 : 1)
                     .foregroundColor(card.isChosen ? .blue : .gray)
                     .background(base.fill(Color.mint))
                     .opacity(isFacedUp ? 0 : 1)
-                    .transition(.asymmetric(insertion: .identity, removal: .identity))
         }
         .rotation3DEffect(.degrees(rotation), axis: (0, 1, 0))
     }
+    
     
     private struct Constats {
         static let cardAspectRatio: CGFloat = 2/3

@@ -69,6 +69,9 @@ class GameSetViewModel: ObservableObject {
     func setCardToFacedUp(_ card: Card) {
         gameModel.setCardToFacedUp(card)
     }
+    func toggleFacedUp(_ card: Card) {
+        gameModel.toggleFacedUp(card)
+    }
     
 //     func deselect(_ card: Card) {
 //        gameModel.deselect(card)

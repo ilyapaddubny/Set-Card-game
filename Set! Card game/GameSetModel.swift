@@ -101,7 +101,7 @@ struct GameSetModel<CardContent: Equatable> {
     }
     
     mutating func drawNamberOfCards(_ numberOfCards: Int) {
-        if numberOfCards > deck.filter({!$0.isFacedUp && $0.isMatched != true}).count {
+        if numberOfCards > deck.filter({!$0.isFacedUp && !$0.isMatched}).count {
             return
         }
         
@@ -121,7 +121,7 @@ struct GameSetModel<CardContent: Equatable> {
             }
         }
         
-        for _ in 0..<numberOfCards {
+        for _ in 0 ..< numberOfCards {
             guard let index = deck.firstIndex(where: {!$0.isFacedUp}) else { return }
             deck[index].isFacedUp = true
         }
@@ -138,13 +138,6 @@ struct GameSetModel<CardContent: Equatable> {
     }
     
     struct Card: Identifiable, Equatable, CustomStringConvertible {
-        static func == (lhs: GameSetModel<CardContent>.Card, rhs: GameSetModel<CardContent>.Card) -> Bool {
-            return lhs.content == rhs.content && 
-            lhs.id == rhs.id &&
-            lhs.isMatched == rhs.isMatched &&
-            lhs.isChosen == rhs.isChosen
-        }
-        
         let content: CardContent
         
         var id = UUID()
@@ -161,7 +154,7 @@ struct GameSetModel<CardContent: Equatable> {
         }
         
         var description: String {
-            "Card id: \(id): \(isMatched ? "Matched" : "") \(isChosen ? "Chosen" : "") \(content)."
+            "Card id: \(id) \(isMatched ? "Matched" : "") \(isChosen ? "Chosen" : "") \(isFacedUp ? "FacedUp" : "") \(content)."
         }
     }
     
@@ -191,6 +184,17 @@ struct GameSetModel<CardContent: Equatable> {
                     deck[index].isFacedUp = true
                 }
             }
+        }
+    
+        mutating func toggleFacedUp(_ card: Card) {
+//            deck.indices.forEach { id in
+//                if let index = deck.firstIndex(where: { $0.id == card.id }) {
+//                    deck[index].isFacedUp.toggle()
+//                    print("🐸 index \(index)")
+//                }
+//            }
+            
+            deck[0].isFacedUp.toggle()
         }
         
     //    mutating func deselect(_ card: Card) {

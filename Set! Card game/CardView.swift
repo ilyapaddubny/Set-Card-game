@@ -18,19 +18,28 @@ struct CardView: View {
     }
     
     var body: some View {
-        //TODO: concider the discard pile
-        if card.isFacedUp || !card.isMatched {
             ShapeView(card: card)
                 .cardify(threeCardsAreSelected: threeCardsAreSelected,
                          card: card)
-    //            .transition(.asymmetric(insertion: .identity, removal: .identity))
-                .transition(.scale)
-        } else {
-            Color.clear
-        }
+//                .transition(.asymmetric(insertion: .identity, removal: .scale))
+//                .transition(.scale)
         
     }
     
     typealias Card = GameSetModel<CardContent>.Card
+    
+    @ViewBuilder
+    static var blank: some View {
+        let base = RoundedRectangle(cornerRadius: 12)
+        ZStack(alignment: .center) {
+            base
+                .stroke(lineWidth: 1)
+            base
+                .fill(.gray)
+                .opacity(0.3)
+            Image(systemName: "nosign")
+                .font(.largeTitle)
+        }
+    }
 }
 

@@ -16,14 +16,14 @@ struct ShapeView: View {
     
     var body: some View {
         GeometryReader { geometry in
-        VStack(alignment: .center, spacing: 0) {
-            ForEach(0..<card.content.numberOfItems, id: \.self) {index in
-                shape(size: geometry.size, index: index)
-                    .padding([.top, .bottom], contentPadding/2)
+            VStack(alignment: .center, spacing: 0) {
+                ForEach(0..<card.content.numberOfItems, id: \.self) {index in
+                    shape(size: geometry.size, index: index)
+                        .padding([.top, .bottom], contentPadding/2)
+                }
             }
+            .frame(width: geometry.size.width, height: geometry.size.height)
         }
-        .frame(width: geometry.size.width, height: geometry.size.height)
-    }
     }
     
     
